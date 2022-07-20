@@ -31,9 +31,7 @@ class AbstractHorseData(
 
         override val dataEntityClass = AbstractHorse::class.java
 
-        override fun getEntityData(itemStack: ItemStack): EntityData<*> {
-            val nbtItem = NBTItem(itemStack)
-
+        override fun getEntityData(nbtItem: NBTItem): EntityData<*> {
             val jumpStrength = nbtItem.getDouble("jumpStrength")
             val saddle = nbtItem.getBoolean("saddle")
 

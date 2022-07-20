@@ -10,8 +10,8 @@ import org.bukkit.inventory.ItemStack
 import kotlin.math.roundToInt
 
 class AgeableData(
-    val age: Int,
-    val adult: Boolean,
+    private val age: Int,
+    private val adult: Boolean,
 ) : EntityData<Ageable>() {
 
     override fun applyItemNBT(nbtItem: NBTItem) {
@@ -31,8 +31,7 @@ class AgeableData(
 
         override val dataEntityClass = Ageable::class.java
 
-        override fun getEntityData(itemStack: ItemStack): EntityData<*> {
-            val nbtItem = NBTItem(itemStack)
+        override fun getEntityData(nbtItem: NBTItem): EntityData<*> {
 
             return AgeableData(
                 nbtItem.getInteger("age"),

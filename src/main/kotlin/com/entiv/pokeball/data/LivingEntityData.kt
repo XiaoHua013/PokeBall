@@ -33,7 +33,6 @@ class LivingEntityData(
         }
 
         if (entity is InventoryHolder) {
-            println(123)
             entity.inventory.contents = contents ?: emptyArray()
         }
     }
@@ -48,7 +47,7 @@ class LivingEntityData(
     }
 
     override fun applyItemNBT(nbtItem: NBTItem) {
-        nbtItem.setObject("entityType", entityType)
+        nbtItem.setString("entityType", entityType.name)
         nbtItem.setDouble("health", health)
         nbtItem.setDouble("maxHealth", maxHealth)
 
@@ -82,10 +81,9 @@ class LivingEntityData(
             )
         }
 
-        override fun getEntityData(itemStack: ItemStack): EntityData<*> {
-            val nbtItem = NBTItem(itemStack)
+        override fun getEntityData(nbtItem: NBTItem): EntityData<*> {
 
-            val type = nbtItem.getObject("entityType", EntityType::class.java)
+            val type = EntityType.valueOf(nbtItem.getString("entityType"))
             val health = nbtItem.getDouble("health")
             val maxHealth = nbtItem.getDouble("maxHealth")
             val name = nbtItem.getObject("customName", Component::class.java)

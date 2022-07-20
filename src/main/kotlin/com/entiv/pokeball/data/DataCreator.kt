@@ -2,6 +2,7 @@ package com.entiv.pokeball.data
 
 import com.entiv.pokeball.utils.getEntityType
 import com.entiv.pokeball.utils.isPokeBall
+import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
 
@@ -11,7 +12,7 @@ abstract class DataCreator<T: Entity> {
 
     protected abstract fun getEntityData(entity: T): EntityData<*>
 
-    protected abstract fun getEntityData(itemStack: ItemStack): EntityData<*>
+    protected abstract fun getEntityData(nbtItem: NBTItem): EntityData<*>
 
     fun fromEntity(entity: Entity): EntityData<*>? {
 
@@ -34,6 +35,7 @@ abstract class DataCreator<T: Entity> {
         if (!dataEntityClass.isAssignableFrom(entityClass)) {
             return null
         }
-        return getEntityData(itemStack)
+
+        return getEntityData(NBTItem(itemStack))
     }
 }
