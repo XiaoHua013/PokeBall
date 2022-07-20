@@ -1,5 +1,5 @@
 name: PokeBall
-main: com.entiv.pokeball.PokeBall
+main: com.entiv.pokeball.PokeBallPlugin
 version: ${version}
 api-version: "1.13"
 
