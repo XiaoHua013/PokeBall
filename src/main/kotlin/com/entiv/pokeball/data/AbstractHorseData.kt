@@ -1,5 +1,6 @@
 package com.entiv.pokeball.data
 
+import de.tr7zw.nbtapi.NBTCompound
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.AbstractHorse
@@ -22,9 +23,9 @@ class AbstractHorseData(
         components.add(loreComponent("马鞍", if (saddle) "有" else "无"))
     }
 
-    override fun applyItemNBT(nbtItem: NBTItem) {
-        nbtItem.setDouble("jumpStrength", jumpStrength)
-        nbtItem.setBoolean("saddle", saddle)
+    override fun applyCompound(nbtCompound: NBTCompound) {
+        nbtCompound.setDouble("jumpStrength", jumpStrength)
+        nbtCompound.setBoolean("saddle", saddle)
     }
 
     companion object : DataCreator<AbstractHorse>() {

@@ -1,5 +1,6 @@
 package com.entiv.pokeball.data
 
+import de.tr7zw.nbtapi.NBTCompound
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import org.bukkit.DyeColor
@@ -9,12 +10,13 @@ class CatData(
     private val catType: Cat.Type,
     private val collarColor: DyeColor
 ) : EntityData<Cat>() {
-    override fun applyItemNBT(nbtItem: NBTItem) {
-        nbtItem.setString("CatType", catType.name)
-        nbtItem.setString("CollarColor", collarColor.name)
+    override fun applyCompound(nbtCompound: NBTCompound) {
+        nbtCompound.setString("CatType", catType.name)
+        nbtCompound.setString("CollarColor", collarColor.name)
     }
 
     override fun applyComponent(components: MutableList<Component>) {
+        //TODO 汉化
         components.add(loreComponent("品种", catType.name))
         components.add(loreComponent("颜色", collarColor.name))
     }

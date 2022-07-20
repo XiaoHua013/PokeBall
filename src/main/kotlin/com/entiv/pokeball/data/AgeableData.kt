@@ -1,5 +1,6 @@
 package com.entiv.pokeball.data
 
+import de.tr7zw.nbtapi.NBTCompound
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.AbstractHorse
@@ -14,9 +15,9 @@ class AgeableData(
     private val adult: Boolean,
 ) : EntityData<Ageable>() {
 
-    override fun applyItemNBT(nbtItem: NBTItem) {
-        nbtItem.setInteger("age", age)
-        nbtItem.setBoolean("adult", adult)
+    override fun applyCompound(nbtCompound: NBTCompound) {
+        nbtCompound.setInteger("age", age)
+        nbtCompound.setBoolean("adult", adult)
     }
 
     override fun applyComponent(components: MutableList<Component>) {

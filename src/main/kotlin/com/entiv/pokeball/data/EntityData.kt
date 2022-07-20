@@ -1,5 +1,6 @@
 package com.entiv.pokeball.data
 
+import de.tr7zw.nbtapi.NBTCompound
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -9,7 +10,7 @@ import org.bukkit.inventory.ItemStack
 
 abstract class EntityData<T : Entity> {
 
-    abstract fun applyItemNBT(nbtItem: NBTItem)
+    abstract fun applyCompound(nbtCompound: NBTCompound)
 
     fun processEntity(entity: Entity) {
         castEntity(entity)?.let {
@@ -19,9 +20,11 @@ abstract class EntityData<T : Entity> {
 
     fun processItemStack(itemStack: ItemStack) {
 
-        NBTItem(itemStack).apply {
-            applyItemNBT(this)
-        }.applyNBT(itemStack)
+        val nbtItem = NBTItem(itemStack)
+        nbtItem.addCompound("PokeData").apply {
+            applyCompound(this)
+        }
+        nbtItem.applyNBT(itemStack)
 
         val lore = itemStack.lore() ?: mutableListOf()
         applyComponent(lore)

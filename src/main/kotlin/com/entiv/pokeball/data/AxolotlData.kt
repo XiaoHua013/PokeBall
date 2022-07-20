@@ -1,5 +1,6 @@
 package com.entiv.pokeball.data
 
+import de.tr7zw.nbtapi.NBTCompound
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Axolotl
@@ -8,11 +9,12 @@ import org.bukkit.inventory.ItemStack
 class AxolotlData(
     private val variant: Axolotl.Variant
 ) : EntityData<Axolotl>() {
-    override fun applyItemNBT(nbtItem: NBTItem) {
-        nbtItem.setString("variant", variant.name)
+    override fun applyCompound(nbtCompound: NBTCompound) {
+        nbtCompound.setString("variant", variant.name)
     }
 
     override fun applyComponent(components: MutableList<Component>) {
+        // TODO 汉化
         components.add(loreComponent("品种", variant.name))
     }
 

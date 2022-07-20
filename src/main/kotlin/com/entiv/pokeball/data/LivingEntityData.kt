@@ -46,17 +46,17 @@ class LivingEntityData(
         }
     }
 
-    override fun applyItemNBT(nbtItem: NBTItem) {
-        nbtItem.setString("entityType", entityType.name)
-        nbtItem.setDouble("health", health)
-        nbtItem.setDouble("maxHealth", maxHealth)
+    override fun applyCompound(nbtCompound: NBTCompound) {
+        nbtCompound.setString("entityType", entityType.name)
+        nbtCompound.setDouble("health", health)
+        nbtCompound.setDouble("maxHealth", maxHealth)
 
         customName?.let {
-            nbtItem.setObject("customName", it)
+            nbtCompound.setObject("customName", it)
         }
 
         contents?.let {
-            val inventoryCompound = nbtItem.getCompoundList("inventory")
+            val inventoryCompound = nbtCompound.getCompoundList("inventory")
 
             for (content in contents) {
                 if (content != null) {

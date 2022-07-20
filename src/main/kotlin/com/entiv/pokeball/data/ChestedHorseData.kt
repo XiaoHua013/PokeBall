@@ -1,5 +1,6 @@
 package com.entiv.pokeball.data
 
+import de.tr7zw.nbtapi.NBTCompound
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.ChestedHorse
@@ -7,8 +8,8 @@ import org.bukkit.entity.ChestedHorse
 class ChestedHorseData(
     private val carryingChest: Boolean
 ): EntityData<ChestedHorse>() {
-    override fun applyItemNBT(nbtItem: NBTItem) {
-        nbtItem.setBoolean("carryingChest", carryingChest)
+    override fun applyCompound(nbtCompound: NBTCompound) {
+        nbtCompound.setBoolean("carryingChest", carryingChest)
     }
 
     override fun applyComponent(components: MutableList<Component>) {
