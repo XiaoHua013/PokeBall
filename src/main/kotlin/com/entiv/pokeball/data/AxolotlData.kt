@@ -1,10 +1,8 @@
 package com.entiv.pokeball.data
 
 import de.tr7zw.nbtapi.NBTCompound
-import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Axolotl
-import org.bukkit.inventory.ItemStack
 
 class AxolotlData(
     private val variant: Axolotl.Variant
@@ -25,8 +23,8 @@ class AxolotlData(
     companion object : DataCreator<Axolotl>() {
         override val dataEntityClass = Axolotl::class.java
 
-        override fun getEntityData(nbtItem: NBTItem): EntityData<*> {
-            val variant = Axolotl.Variant.valueOf(nbtItem.getString("variant"))
+        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
+            val variant = Axolotl.Variant.valueOf(nbtCompound.getString("variant"))
 
             return AxolotlData(variant)
         }

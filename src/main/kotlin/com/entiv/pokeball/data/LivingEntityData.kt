@@ -1,18 +1,13 @@
 package com.entiv.pokeball.data
 
 import de.tr7zw.nbtapi.NBTCompound
-import de.tr7zw.nbtapi.NBTCompoundList
-import de.tr7zw.nbtapi.NBTContainer
 import de.tr7zw.nbtapi.NBTItem
-import de.tr7zw.nbtapi.NBTList
 import net.kyori.adventure.text.Component
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
-import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
-import java.util.Arrays
 
 class LivingEntityData(
     private val entityType: EntityType,
@@ -47,7 +42,7 @@ class LivingEntityData(
     }
 
     override fun applyCompound(nbtCompound: NBTCompound) {
-        nbtCompound.setString("entityType", entityType.name)
+        nbtCompound.setString("entityType", entityType.toString())
         nbtCompound.setDouble("health", health)
         nbtCompound.setDouble("maxHealth", maxHealth)
 
@@ -60,7 +55,6 @@ class LivingEntityData(
 
             for (content in contents) {
                 if (content != null) {
-                    println("set item: ${content.type}")
                     inventoryCompound.addCompound().setItemStack("item", content)
                 }
             }
@@ -81,14 +75,14 @@ class LivingEntityData(
             )
         }
 
-        override fun getEntityData(nbtItem: NBTItem): EntityData<*> {
+        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
 
-            val type = EntityType.valueOf(nbtItem.getString("entityType"))
-            val health = nbtItem.getDouble("health")
-            val maxHealth = nbtItem.getDouble("maxHealth")
-            val name = nbtItem.getObject("customName", Component::class.java)
+            val type = EntityType.valueOf(nbtCompound.getString("entityType"))
+            val health = nbtCompound.getDouble("health")
+            val maxHealth = nbtCompound.getDouble("maxHealth")
+            val name = nbtCompound.getObject("customName", Component::class.java)
 
-            val inventoryCompound = nbtItem.getCompoundList("inventory")
+            val inventoryCompound = nbtCompound.getCompoundList("inventory")
             val inventory = inventoryCompound
                 .map {
                     NBTItem.convertNBTtoItem(it.getCompound("item"))

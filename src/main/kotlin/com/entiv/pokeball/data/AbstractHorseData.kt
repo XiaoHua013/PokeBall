@@ -1,12 +1,8 @@
 package com.entiv.pokeball.data
 
 import de.tr7zw.nbtapi.NBTCompound
-import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.AbstractHorse
-import org.bukkit.entity.Entity
-import org.bukkit.inventory.AbstractHorseInventory
-import org.bukkit.inventory.ItemStack
 import kotlin.math.roundToInt
 
 class AbstractHorseData(
@@ -32,9 +28,9 @@ class AbstractHorseData(
 
         override val dataEntityClass = AbstractHorse::class.java
 
-        override fun getEntityData(nbtItem: NBTItem): EntityData<*> {
-            val jumpStrength = nbtItem.getDouble("jumpStrength")
-            val saddle = nbtItem.getBoolean("saddle")
+        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
+            val jumpStrength = nbtCompound.getDouble("jumpStrength")
+            val saddle = nbtCompound.getBoolean("saddle")
 
             return AbstractHorseData(jumpStrength, saddle)
         }

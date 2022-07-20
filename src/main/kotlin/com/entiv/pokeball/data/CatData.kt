@@ -1,7 +1,6 @@
 package com.entiv.pokeball.data
 
 import de.tr7zw.nbtapi.NBTCompound
-import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import org.bukkit.DyeColor
 import org.bukkit.entity.Cat
@@ -29,9 +28,9 @@ class CatData(
     companion object : DataCreator<Cat>() {
         override val dataEntityClass = Cat::class.java
 
-        override fun getEntityData(nbtItem: NBTItem): EntityData<*> {
-            val catType = Cat.Type.valueOf(nbtItem.getString("CatType"))
-            val collarColor = DyeColor.valueOf(nbtItem.getString("CollarColor"))
+        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
+            val catType = Cat.Type.valueOf(nbtCompound.getString("CatType"))
+            val collarColor = DyeColor.valueOf(nbtCompound.getString("CollarColor"))
             return CatData(catType, collarColor)
         }
 

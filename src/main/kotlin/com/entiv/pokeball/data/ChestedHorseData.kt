@@ -1,7 +1,6 @@
 package com.entiv.pokeball.data
 
 import de.tr7zw.nbtapi.NBTCompound
-import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.ChestedHorse
 
@@ -22,8 +21,8 @@ class ChestedHorseData(
     companion object : DataCreator<ChestedHorse>() {
         override val dataEntityClass = ChestedHorse::class.java
 
-        override fun getEntityData(nbtItem: NBTItem): EntityData<*> {
-            return ChestedHorseData(nbtItem.getBoolean("carryingChest"))
+        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
+            return ChestedHorseData(nbtCompound.getBoolean("carryingChest"))
         }
 
         override fun getEntityData(entity: ChestedHorse): EntityData<*> {

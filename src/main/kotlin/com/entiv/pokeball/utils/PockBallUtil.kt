@@ -24,5 +24,6 @@ fun Entity.toPokeBallItem(): ItemStack {
 }
 
 fun ItemStack.getEntityType(): EntityType? {
-    return NBTItem(this).getObject("entityType", EntityType::class.java)
+    val name = NBTItem(this).getCompound("PokeBall").getString("entityType") ?: return null
+    return EntityType.valueOf(name)
 }

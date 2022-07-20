@@ -21,7 +21,7 @@ abstract class EntityData<T : Entity> {
     fun processItemStack(itemStack: ItemStack) {
 
         val nbtItem = NBTItem(itemStack)
-        nbtItem.addCompound("PokeData").apply {
+        nbtItem.addCompound("PokeBall").apply {
             applyCompound(this)
         }
         nbtItem.applyNBT(itemStack)
