@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.entity.MushroomCow
 
 class MushroomCowData(
-    val variant: MushroomCow.Variant
+    private val variant: MushroomCow.Variant
 ): EntityData<MushroomCow>() {
     override fun applyCompound(nbtCompound: NBTCompound) {
         nbtCompound.setString("Variant", variant.name)
