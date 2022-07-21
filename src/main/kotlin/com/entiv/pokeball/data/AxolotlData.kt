@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.entity.Axolotl
 import org.bukkit.entity.Axolotl.Variant
 
-object AxolotlData : DataWrapper<Axolotl>() {
+object AxolotlData : DataWrapper<Axolotl>(Axolotl::class) {
     override fun entityWriteToNbt(entity: Axolotl, compound: NBTCompound) {
         compound.setString("variant", entity.variant.name)
     }

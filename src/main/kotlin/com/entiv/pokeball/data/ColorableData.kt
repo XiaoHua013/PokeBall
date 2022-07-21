@@ -6,7 +6,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.DyeColor
 import org.bukkit.material.Colorable
 
-object ColorableData : DataWrapper<Colorable>() {
+object ColorableData : DataWrapper<Colorable>(Colorable::class) {
     override fun entityWriteToNbt(entity: Colorable, compound: NBTCompound) {
         compound.setString("Color", entity.color?.name ?: DyeColor.WHITE.name)
     }

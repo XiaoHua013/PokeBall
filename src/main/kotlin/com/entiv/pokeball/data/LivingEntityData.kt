@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.LivingEntity
 
-object LivingEntityData : DataWrapper<LivingEntity>() {
+object LivingEntityData : DataWrapper<LivingEntity>(LivingEntity::class) {
     override fun entityWriteToNbt(entity: LivingEntity, compound: NBTCompound) {
         val maxHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.baseValue ?: error("读取实体最大生命值错误")
 

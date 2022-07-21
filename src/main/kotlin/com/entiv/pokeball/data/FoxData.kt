@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.entity.AnimalTamer
 import org.bukkit.entity.Fox
 
-object FoxData : DataWrapper<Fox>() {
+object FoxData : DataWrapper<Fox>(Fox::class) {
     override fun entityWriteToNbt(entity: Fox, compound: NBTCompound) {
         compound.setObject("firstTrustedPlayer", entity.firstTrustedPlayer)
         compound.setObject("secondTrustedPlayer", entity.secondTrustedPlayer)

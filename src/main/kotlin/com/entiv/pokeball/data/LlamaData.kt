@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.entity.Llama
 import org.bukkit.entity.Llama.Color
 
-object LlamaData : DataWrapper<Llama>() {
+object LlamaData : DataWrapper<Llama>(Llama::class) {
 
     override fun entityWriteToNbt(entity: Llama, compound: NBTCompound) {
         compound.setString("Color", entity.color.name)

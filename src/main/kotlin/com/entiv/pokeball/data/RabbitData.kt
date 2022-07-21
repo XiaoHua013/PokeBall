@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Rabbit
 
-object RabbitData : DataWrapper<Rabbit>() {
+object RabbitData : DataWrapper<Rabbit>(Rabbit::class) {
     override fun entityWriteToNbt(entity: Rabbit, compound: NBTCompound) {
         compound.setString("RabbitType", entity.rabbitType.name)
     }

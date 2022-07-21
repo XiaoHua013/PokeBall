@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Raider
 
-object RaiderData : DataWrapper<Raider>() {
+object RaiderData : DataWrapper<Raider>(Raider::class) {
     override fun entityWriteToNbt(entity: Raider, compound: NBTCompound) {
         compound.setBoolean("isPatrolLeader", entity.isPatrolLeader)
     }

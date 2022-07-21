@@ -24,7 +24,7 @@ import org.bukkit.entity.Parrot.Variant
 //
 //
 //}
-object ParrotData : DataWrapper<Parrot>() {
+object ParrotData : DataWrapper<Parrot>(Parrot::class) {
     override fun entityWriteToNbt(entity: Parrot, compound: NBTCompound) {
         compound.setString("Variant", entity.variant.name)
     }

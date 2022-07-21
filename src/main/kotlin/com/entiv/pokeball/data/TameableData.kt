@@ -6,7 +6,7 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.AnimalTamer
 import org.bukkit.entity.Tameable
 
-object TameableData : DataWrapper<Tameable>() {
+object TameableData : DataWrapper<Tameable>(Tameable::class) {
     override fun entityWriteToNbt(entity: Tameable, compound: NBTCompound) {
         compound.setBoolean("isTamed", entity.isTamed)
         compound.setString("owner", entity.owner?.name ?: "无")

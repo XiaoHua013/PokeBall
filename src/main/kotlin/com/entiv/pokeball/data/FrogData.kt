@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Frog
 import org.bukkit.entity.Frog.Variant
-object FrogData : DataWrapper<Frog>() {
+object FrogData : DataWrapper<Frog>(Frog::class) {
     override fun entityWriteToNbt(entity: Frog, compound: NBTCompound) {
         compound.setString("Variant", entity.variant.name)
     }

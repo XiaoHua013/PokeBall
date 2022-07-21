@@ -7,9 +7,10 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
+import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
-
-sealed class DataWrapper<T : Any> {
+sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
 
     protected abstract fun entityWriteToNbt(entity: T, compound: NBTCompound)
 
@@ -18,14 +19,16 @@ sealed class DataWrapper<T : Any> {
     protected abstract fun entityWriteToComponent(entity: T, components: MutableList<Component>)
 
     fun processEntity(entity: Entity, compound: NBTCompound) {
+
         castEntity(entity)?.let {
             nbtWriteToEntity(compound, it)
         }
     }
 
     fun processItemStack(itemStack: ItemStack, entity: Entity) {
-        val nbtItem = NBTItem(itemStack)
+
         val castEntity = castEntity(entity) ?: return
+        val nbtItem = NBTItem(itemStack)
 
         nbtItem.addCompound("PokeBall").apply {
             entityWriteToNbt(castEntity, this)
@@ -37,6 +40,8 @@ sealed class DataWrapper<T : Any> {
         entityWriteToComponent(castEntity, lore)
         itemStack.lore(lore)
     }
+
+    private fun canCastEntity(entity: Entity) = entity::class.isSubclassOf(clazz)
 
     protected fun addComponent(components: MutableList<Component>, type: String, variable: Any) {
         val text = Component.text()
@@ -52,10 +57,15 @@ sealed class DataWrapper<T : Any> {
         components.add(text.build())
     }
 
+
     private fun castEntity(entity: Entity): T? {
-        @Suppress("UNCHECKED_CAST") return entity as? T
+        @Suppress("UNCHECKED_CAST")
+        return if (canCastEntity(entity)) {
+            entity as T
+        } else {
+            null
+        }
     }
 
-    protected fun noNeedComponent() {
-    }
+    protected fun noNeedComponent() {}
 }

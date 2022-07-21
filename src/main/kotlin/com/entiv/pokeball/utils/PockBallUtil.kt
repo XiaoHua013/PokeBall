@@ -12,8 +12,6 @@ fun ItemStack.isPokeBall() = NBTItem(this).getString("PockBall") != null
 fun Entity.toPokeBallItem(): ItemStack {
     val itemStack = ItemStack(Material.STONE)
 
-    println(DataWrapper::class.sealedSubclasses)
-
     DataWrapper::class.sealedSubclasses.forEach {
         it.objectInstance?.processItemStack(itemStack, this)
     }

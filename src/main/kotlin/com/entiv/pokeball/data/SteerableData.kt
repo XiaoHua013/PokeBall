@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Steerable
 
-object SteerableData : DataWrapper<Steerable>() {
+object SteerableData : DataWrapper<Steerable>(Steerable::class) {
     override fun entityWriteToNbt(entity: Steerable, compound: NBTCompound) {
         compound.setBoolean("hasSaddle", entity.hasSaddle())
     }

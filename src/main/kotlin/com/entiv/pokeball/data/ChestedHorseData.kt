@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.ChestedHorse
 
-object ChestedHorseData : DataWrapper<ChestedHorse>() {
+object ChestedHorseData : DataWrapper<ChestedHorse>(ChestedHorse::class) {
     override fun entityWriteToNbt(entity: ChestedHorse, compound: NBTCompound) {
         compound.setBoolean("carryingChest", entity.isCarryingChest)
     }

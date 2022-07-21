@@ -4,9 +4,10 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Enderman
+import kotlin.math.E
 
 
-object EndermanData : DataWrapper<Enderman>() {
+object EndermanData : DataWrapper<Enderman>(Enderman::class) {
     override fun entityWriteToNbt(entity: Enderman, compound: NBTCompound) {
         compound.setObject("carriedBlock", entity.carriedBlock)
     }

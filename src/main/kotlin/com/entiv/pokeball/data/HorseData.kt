@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Horse
 
-object HorseData : DataWrapper<Horse>() {
+object HorseData : DataWrapper<Horse>(Horse::class) {
     override fun entityWriteToNbt(entity: Horse, compound: NBTCompound) {
         compound.setString("Color", entity.color.name)
         compound.setString("Style", entity.style.name)

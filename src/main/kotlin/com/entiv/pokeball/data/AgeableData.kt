@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Ageable
 
-object AgeableData : DataWrapper<Ageable>() {
+object AgeableData : DataWrapper<Ageable>(Ageable::class) {
     override fun entityWriteToNbt(entity: Ageable, compound: NBTCompound) {
         compound.setInteger("Age", entity.age)
         compound.setBoolean("Adult", entity.isAdult)

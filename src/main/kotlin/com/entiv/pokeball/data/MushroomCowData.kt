@@ -4,25 +4,8 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.MushroomCow
 
-//class MushroomCowData(
-//    private val variant: MushroomCow.Variant
-//): EntityData<MushroomCow>() {
-//    override fun applyCompound(compound: NBTCompound) {
-//        compound.setString("Variant", variant.name)
-//    }
-//
-//    override fun applyComponent(components: MutableList<Component>) {
-//        loreComponent("品种", translate(variant)).also { components.add(it) }
-//    }
-//
 
-//
-//    override fun applyEntity(entity: MushroomCow) {
-//        entity.variant = variant
-//    }
-//
-//}
-object MushroomCowData : DataWrapper<MushroomCow>() {
+object MushroomCowData : DataWrapper<MushroomCow>(MushroomCow::class) {
     override fun entityWriteToNbt(entity: MushroomCow, compound: NBTCompound) {
         compound.setString("Variant", entity.variant.name)
     }

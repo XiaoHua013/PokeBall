@@ -3,10 +3,11 @@ package com.entiv.pokeball.data
 import de.tr7zw.nbtapi.NBTCompound
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
+import org.bukkit.Material
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
 
-object InventoryData : DataWrapper<InventoryHolder>() {
+object InventoryData : DataWrapper<InventoryHolder>(InventoryHolder::class) {
     override fun entityWriteToNbt(entity: InventoryHolder, compound: NBTCompound) {
         val inventoryCompound = compound.getCompoundList("inventory")
 
@@ -14,13 +15,15 @@ object InventoryData : DataWrapper<InventoryHolder>() {
             val item = entity.inventory.getItem(i)
             if (item != null) {
                 inventoryCompound.addCompound().setItemStack("item", item)
+            } else {
+                inventoryCompound.addCompound().setItemStack("item", ItemStack(Material.AIR))
             }
         }
     }
 
     override fun nbtWriteToEntity(compound: NBTCompound, entity: InventoryHolder) {
         val inventoryCompound = compound.getCompoundList("inventory")
-        val contents = inventoryCompound.map { NBTItem.convertNBTtoItem(it.getCompound("item")) }.toTypedArray()
+        val contents = inventoryCompound.map { it.getItemStack("item") }.toTypedArray()
 
         entity.inventory.contents = contents
     }

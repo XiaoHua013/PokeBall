@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Sheep
 
-object SheepData : DataWrapper<Sheep>() {
+object SheepData : DataWrapper<Sheep>(Sheep::class) {
     override fun entityWriteToNbt(entity: Sheep, compound: NBTCompound) {
         compound.setBoolean("Sheared", entity.isSheared)
     }

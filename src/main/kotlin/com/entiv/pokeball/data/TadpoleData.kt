@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Tadpole
 
-object TadpoleData : DataWrapper<Tadpole>() {
+object TadpoleData : DataWrapper<Tadpole>(Tadpole::class) {
     override fun entityWriteToNbt(entity: Tadpole, compound: NBTCompound) {
         compound.setInteger("Age", entity.age)
     }

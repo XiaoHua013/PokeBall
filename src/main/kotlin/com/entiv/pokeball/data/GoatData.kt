@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Goat
 
-object GoatData : DataWrapper<Goat>() {
+object GoatData : DataWrapper<Goat>(Goat::class) {
     override fun entityWriteToNbt(entity: Goat, compound: NBTCompound) {
         compound.setBoolean("hasLeftHorn", entity.hasLeftHorn())
         compound.setBoolean("hasRightHorn", entity.hasRightHorn())

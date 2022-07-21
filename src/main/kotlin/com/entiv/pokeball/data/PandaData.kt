@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Panda
 
-object PandaData : DataWrapper<Panda>() {
+object PandaData : DataWrapper<Panda>(Panda::class) {
     override fun entityWriteToNbt(entity: Panda, compound: NBTCompound) {
         compound.setString("mainGene", entity.mainGene.name)
         compound.setString("hiddenGene", entity.hiddenGene.name)

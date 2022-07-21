@@ -15,6 +15,8 @@ class PokeBall(itemStack: ItemStack) {
         val world = location.world
         val entity = world.spawnEntity(location, entityType)
 
+        println(DataWrapper::class.sealedSubclasses.size)
+
         DataWrapper::class.sealedSubclasses.forEach {
             it.objectInstance?.processEntity(entity, compound)
         }

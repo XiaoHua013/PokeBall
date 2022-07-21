@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.entity.AbstractHorse
 import kotlin.math.roundToInt
 
-object AbstractHorseData : DataWrapper<AbstractHorse>() {
+object AbstractHorseData : DataWrapper<AbstractHorse>(AbstractHorse::class) {
     override fun entityWriteToNbt(entity: AbstractHorse, compound: NBTCompound) {
         compound.setDouble("JumpStrength", entity.jumpStrength)
         compound.setBoolean("Saddle", entity.inventory.saddle != null)

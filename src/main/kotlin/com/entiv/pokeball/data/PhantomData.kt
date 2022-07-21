@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Phantom
 
-object PhantomData : DataWrapper<Phantom>() {
+object PhantomData : DataWrapper<Phantom>(Phantom::class) {
     override fun entityWriteToNbt(entity: Phantom, compound: NBTCompound) {
         compound.setInteger("Size", entity.size)
     }
