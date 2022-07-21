@@ -5,15 +5,17 @@ import net.kyori.adventure.text.Component
 import org.bukkit.entity.Axolotl
 import org.bukkit.entity.Axolotl.Variant
 
-class AxolotlData(
-    private val variant: Variant
-) : EntityData<Axolotl>() {
-    override fun applyCompound(nbtCompound: NBTCompound) {
-        nbtCompound.setString("variant", variant.name)
+object AxolotlData : DataWrapper<Axolotl>() {
+    override fun entityWriteToNbt(entity: Axolotl, compound: NBTCompound) {
+        compound.setString("variant", entity.variant.name)
     }
 
-    override fun applyComponent(components: MutableList<Component>) {
-        components.add(loreComponent("颜色", translateVariant(variant)))
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: Axolotl) {
+        entity.variant = Variant.valueOf(compound.getString("variant"))
+    }
+
+    override fun entityWriteToComponent(entity: Axolotl, components: MutableList<Component>) {
+        addComponent(components, "颜色", translateVariant(entity.variant))
     }
 
     private fun translateVariant(variant: Variant): String {
@@ -25,22 +27,5 @@ class AxolotlData(
             Variant.BLUE -> "蓝色"
         }
     }
-    override fun applyEntity(entity: Axolotl) {
-        entity.variant = variant
-    }
 
-    companion object : DataCreator<Axolotl>() {
-        override val dataClass = Axolotl::class.java
-
-        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
-            val variant = Variant.valueOf(nbtCompound.getString("variant"))
-
-            return AxolotlData(variant)
-        }
-
-        override fun getEntityData(entity: Axolotl): EntityData<*> {
-            return AxolotlData(entity.variant)
-        }
-
-    }
 }

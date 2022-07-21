@@ -1,27 +1,23 @@
 package com.entiv.pokeball
 
-import com.entiv.pokeball.data.*
-import com.entiv.pokeball.utils.getEntityType
-import com.entiv.pokeball.utils.toPokeBallItem
+import com.entiv.pokeball.data.DataWrapper
 import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
-import kotlin.reflect.full.companionObjectInstance
-import kotlin.reflect.full.createInstance
 
-class PokeBall(private val itemStack: ItemStack) {
+class PokeBall(itemStack: ItemStack) {
 
-    private val entityType = itemStack.getEntityType() ?: error("itemStack is not a valid pokeball")
+    private val compound = NBTItem(itemStack).getCompound("PokeBall") ?: error("该物品不是一个有效的精灵球")
+    private val entityType = EntityType.valueOf(compound.getString("EntityType"))
 
     fun spawnEntity(location: Location) {
         val world = location.world
         val entity = world.spawnEntity(location, entityType)
 
-        //TODO 排序问题，LivingData 的数据应该排在最前面
-        EntityData::class.sealedSubclasses.forEach {
-            val companionObjectInstance = it.companionObjectInstance as? DataCreator<*> ?: error("类 ${it.simpleName} 的伴生对象没有实现 DataCreator 接口")
-            companionObjectInstance.fromItemStack(itemStack)?.processEntity(entity)
+        DataWrapper::class.sealedSubclasses.forEach {
+            it.objectInstance?.processEntity(entity, compound)
         }
     }
+
 }

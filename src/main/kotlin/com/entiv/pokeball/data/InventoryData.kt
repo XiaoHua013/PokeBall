@@ -6,45 +6,26 @@ import net.kyori.adventure.text.Component
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
 
-class InventoryData(
-    private val contents: Array<ItemStack?>? = null
-) : EntityData<InventoryHolder>() {
+object InventoryData : DataWrapper<InventoryHolder>() {
+    override fun entityWriteToNbt(entity: InventoryHolder, compound: NBTCompound) {
+        val inventoryCompound = compound.getCompoundList("inventory")
 
-    override fun applyCompound(nbtCompound: NBTCompound) {
-        contents?.let {
-            val inventoryCompound = nbtCompound.getCompoundList("inventory")
-
-            for (content in contents) {
-                if (content != null) {
-                    inventoryCompound.addCompound().setItemStack("item", content)
-                }
+        for (i in 0 until entity.inventory.size) {
+            val item = entity.inventory.getItem(i)
+            if (item != null) {
+                inventoryCompound.addCompound().setItemStack("item", item)
             }
         }
     }
 
-    override fun applyComponent(components: MutableList<Component>) {
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: InventoryHolder) {
+        val inventoryCompound = compound.getCompoundList("inventory")
+        val contents = inventoryCompound.map { NBTItem.convertNBTtoItem(it.getCompound("item")) }.toTypedArray()
+
+        entity.inventory.contents = contents
     }
 
-    override fun applyEntity(entity: InventoryHolder) {
-        entity.inventory.contents = contents ?: emptyArray()
-    }
-
-    companion object : DataCreator<InventoryHolder>() {
-        override val dataClass = InventoryHolder::class.java
-
-        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
-            val inventoryCompound = nbtCompound.getCompoundList("inventory")
-            val inventory = inventoryCompound
-                .map {
-                    NBTItem.convertNBTtoItem(it.getCompound("item"))
-                }
-                .toTypedArray()
-
-            return InventoryData(inventory)
-        }
-
-        override fun getEntityData(entity: InventoryHolder): EntityData<*> {
-            return InventoryData(entity.inventory.contents)
-        }
+    override fun entityWriteToComponent(entity: InventoryHolder, components: MutableList<Component>) {
+        noNeedComponent()
     }
 }

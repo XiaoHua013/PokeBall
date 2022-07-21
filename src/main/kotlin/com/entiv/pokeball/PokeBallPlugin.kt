@@ -1,20 +1,11 @@
 package com.entiv.pokeball
 
 import com.entiv.core.plugin.InsekiPlugin
-import com.entiv.pokeball.data.AbstractHorseData
-import com.entiv.pokeball.data.LivingEntityData
 import com.entiv.pokeball.utils.isPokeBall
 import com.entiv.pokeball.utils.toPokeBallItem
-import de.tr7zw.nbtapi.NBTEntity
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+
 import org.bukkit.Material
-import org.bukkit.entity.AbstractHorse
-import org.bukkit.entity.Entity
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
-import org.bukkit.entity.SkeletonHorse
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEntityEvent

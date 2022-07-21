@@ -5,41 +5,20 @@ import net.kyori.adventure.text.Component
 import org.bukkit.entity.AbstractHorse
 import kotlin.math.roundToInt
 
-class AbstractHorseData(
-    private val jumpStrength: Double,
-    private val saddle: Boolean,
-) : EntityData<AbstractHorse>() {
-
-    override fun applyEntity(entity: AbstractHorse) {
-        entity.jumpStrength = jumpStrength
+object AbstractHorseData : DataWrapper<AbstractHorse>() {
+    override fun entityWriteToNbt(entity: AbstractHorse, compound: NBTCompound) {
+        compound.setDouble("JumpStrength", entity.jumpStrength)
+        compound.setBoolean("Saddle", entity.inventory.saddle != null)
     }
 
-    override fun applyComponent(components: MutableList<Component>) {
-        components.add(loreComponent("跳跃力", (jumpStrength * 100).roundToInt()))
-        components.add(loreComponent("马鞍", if (saddle) "有" else "无"))
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: AbstractHorse) {
+        entity.jumpStrength = compound.getDouble("JumpStrength")
+        entity.inventory.saddle = if (compound.getBoolean("Saddle")) entity.inventory.saddle else null
     }
 
-    override fun applyCompound(nbtCompound: NBTCompound) {
-        nbtCompound.setDouble("jumpStrength", jumpStrength)
-        nbtCompound.setBoolean("saddle", saddle)
+    override fun entityWriteToComponent(entity: AbstractHorse, components: MutableList<Component>) {
+        addComponent(components, "跳跃力", (entity.jumpStrength * 100).roundToInt())
+        addComponent(components, "马鞍", if (entity.inventory.saddle != null) "有" else "无")
     }
 
-    companion object : DataCreator<AbstractHorse>() {
-
-        override val dataClass = AbstractHorse::class.java
-
-        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
-            val jumpStrength = nbtCompound.getDouble("jumpStrength")
-            val saddle = nbtCompound.getBoolean("saddle")
-
-            return AbstractHorseData(jumpStrength, saddle)
-        }
-
-        override fun getEntityData(entity: AbstractHorse): EntityData<*> {
-            return AbstractHorseData(
-                jumpStrength = entity.jumpStrength,
-                saddle = entity.inventory.saddle != null
-            )
-        }
-    }
 }

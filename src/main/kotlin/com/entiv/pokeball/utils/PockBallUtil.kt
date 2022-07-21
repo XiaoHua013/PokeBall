@@ -1,34 +1,24 @@
 package com.entiv.pokeball.utils
 
-import com.entiv.pokeball.data.*
+import com.entiv.pokeball.data.DataWrapper
 import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.DyeColor
 import org.bukkit.Material
 import org.bukkit.entity.Entity
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.ItemStack
-import kotlin.reflect.full.companionObjectInstance
 
-fun ItemStack.isPokeBall(): Boolean {
-    return getEntityType() != null
-}
+fun ItemStack.isPokeBall() = NBTItem(this).getString("PockBall") != null
 
 fun Entity.toPokeBallItem(): ItemStack {
     val itemStack = ItemStack(Material.STONE)
 
-    EntityData::class.sealedSubclasses.forEach {
-        val companionObject =
-            it.companionObjectInstance as? DataCreator<*> ?: error("类 ${it.simpleName} 的伴生对象没有实现 DataCreator 接口")
-        companionObject.fromEntity(this)?.processItemStack(itemStack)
+    println(DataWrapper::class.sealedSubclasses)
+
+    DataWrapper::class.sealedSubclasses.forEach {
+        it.objectInstance?.processItemStack(itemStack, this)
     }
 
     return itemStack
-}
-
-fun ItemStack.getEntityType(): EntityType? {
-    val name = NBTItem(this).getCompound("PokeBall")?.getString("entityType") ?: return null
-    return EntityType.valueOf(name)
 }
 
 fun translateDyeColor(dyeColor: DyeColor): String {

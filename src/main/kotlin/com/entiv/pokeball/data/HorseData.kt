@@ -4,38 +4,41 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Horse
 
-class HorseData(
-    private val horseColor: Horse.Color,
-    private val horseStyle: Horse.Style,
-): EntityData<Horse>() {
-    override fun applyCompound(nbtCompound: NBTCompound) {
-        nbtCompound.setString("Color", horseColor.name)
-        nbtCompound.setString("Style", horseStyle.name)
+object HorseData : DataWrapper<Horse>() {
+    override fun entityWriteToNbt(entity: Horse, compound: NBTCompound) {
+        compound.setString("Color", entity.color.name)
+        compound.setString("Style", entity.style.name)
     }
 
-    override fun applyComponent(components: MutableList<Component>) {
-        loreComponent("颜色", horseColor.name).also { components.add(it) }
-        loreComponent("品种", horseStyle.name).also { components.add(it) }
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: Horse) {
+        entity.color = Horse.Color.valueOf(compound.getString("Color"))
+        entity.style = Horse.Style.valueOf(compound.getString("Style"))
     }
 
-    override fun applyEntity(entity: Horse) {
-        entity.color = horseColor
-        entity.style = horseStyle
+    override fun entityWriteToComponent(entity: Horse, components: MutableList<Component>) {
+        addComponent(components, "颜色", translationColor(entity.color))
+        addComponent(components, "花纹", translationStyle(entity.style))
     }
 
-    companion object : DataCreator<Horse>() {
-        override val dataClass = Horse::class.java
-
-        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
-            val horseColor = Horse.Color.valueOf(nbtCompound.getString("Color"))
-            val horseStyle = Horse.Style.valueOf(nbtCompound.getString("Style"))
-
-            return HorseData(horseColor, horseStyle)
+    private fun translationColor(color: Horse.Color): String {
+        return when (color) {
+            Horse.Color.WHITE -> "白色"
+            Horse.Color.CREAMY -> "淡栗色"
+            Horse.Color.CHESTNUT -> "深枣红色"
+            Horse.Color.BROWN -> "褐色"
+            Horse.Color.BLACK -> "黑色"
+            Horse.Color.GRAY -> "灰色"
+            Horse.Color.DARK_BROWN -> "深褐色"
         }
+    }
 
-        override fun getEntityData(entity: Horse): EntityData<*> {
-            return HorseData(entity.color, entity.style)
+    private fun translationStyle(style: Horse.Style): String {
+        return when (style) {
+            Horse.Style.NONE -> "纯色"
+            Horse.Style.WHITE -> "长袜白斑"
+            Horse.Style.WHITEFIELD -> "雪片白斑"
+            Horse.Style.WHITE_DOTS -> "白色斑点"
+            Horse.Style.BLACK_DOTS -> "黑色斑点"
         }
-
     }
 }

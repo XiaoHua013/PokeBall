@@ -4,41 +4,18 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Ageable
 
-class AgeableData(
-    private val age: Int,
-    private val adult: Boolean,
-) : EntityData<Ageable>() {
-
-    override fun applyCompound(nbtCompound: NBTCompound) {
-        nbtCompound.setInteger("age", age)
-        nbtCompound.setBoolean("adult", adult)
+object AgeableData : DataWrapper<Ageable>() {
+    override fun entityWriteToNbt(entity: Ageable, compound: NBTCompound) {
+        compound.setInteger("Age", entity.age)
+        compound.setBoolean("Adult", entity.isAdult)
     }
 
-    override fun applyComponent(components: MutableList<Component>) {
-        components.add(loreComponent("成年", if (adult) "是" else "否"))
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: Ageable) {
+        entity.age = compound.getInteger("Age")
     }
 
-    override fun applyEntity(entity: Ageable) {
-        entity.age = age
+    override fun entityWriteToComponent(entity: Ageable, components: MutableList<Component>) {
+        addComponent(components, "成年", if (entity.isAdult) "是" else "否")
     }
 
-    companion object : DataCreator<Ageable>() {
-
-        override val dataClass = Ageable::class.java
-
-        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
-
-            return AgeableData(
-                nbtCompound.getInteger("age"),
-                nbtCompound.getBoolean("adult")
-            )
-        }
-
-        override fun getEntityData(entity: Ageable): EntityData<*> {
-            return AgeableData(
-                entity.age,
-                entity.isAdult
-            )
-        }
-    }
 }

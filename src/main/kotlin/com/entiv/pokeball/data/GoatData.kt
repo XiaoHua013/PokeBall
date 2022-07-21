@@ -4,46 +4,22 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Goat
 
-class GoatData(
-    private val hasLeftHorn: Boolean,
-    private val hasRightHorn: Boolean,
-    private val isScreaming: Boolean,
-): EntityData<Goat>() {
-    override fun applyCompound(nbtCompound: NBTCompound) {
-        nbtCompound.setBoolean("hasLeftHorn", hasLeftHorn)
-        nbtCompound.setBoolean("hasRightHorn", hasRightHorn)
-        nbtCompound.setBoolean("isScreaming", isScreaming)
+object GoatData : DataWrapper<Goat>() {
+    override fun entityWriteToNbt(entity: Goat, compound: NBTCompound) {
+        compound.setBoolean("hasLeftHorn", entity.hasLeftHorn())
+        compound.setBoolean("hasRightHorn", entity.hasRightHorn())
+        compound.setBoolean("isScreaming", entity.isScreaming)
     }
 
-    override fun applyComponent(components: MutableList<Component>) {
-        loreComponent("左角", if (hasLeftHorn) "有" else "无").also { components.add(it) }
-        loreComponent("右角", if (hasRightHorn) "有" else "无").also { components.add(it) }
-        loreComponent("尖叫山羊", if (isScreaming) "是" else "否").also { components.add(it) }
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: Goat) {
+        entity.setLeftHorn(compound.getBoolean("hasLeftHorn"))
+        entity.setRightHorn(compound.getBoolean("hasRightHorn"))
+        entity.isScreaming = compound.getBoolean("isScreaming")
     }
 
-    override fun applyEntity(entity: Goat) {
-        entity.setLeftHorn(hasLeftHorn)
-        entity.setLeftHorn(hasRightHorn)
-        entity.isScreaming = isScreaming
-    }
-
-    companion object : DataCreator<Goat>() {
-        override val dataClass = Goat::class.java
-
-        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
-            return GoatData(
-                nbtCompound.getBoolean("hasLeftHorn"),
-                nbtCompound.getBoolean("hasRightHorn"),
-                nbtCompound.getBoolean("isScreaming")
-            )
-        }
-
-        override fun getEntityData(entity: Goat): EntityData<*> {
-            return GoatData(
-                entity.hasLeftHorn(),
-                entity.hasRightHorn(),
-                entity.isScreaming
-            )
-        }
+    override fun entityWriteToComponent(entity: Goat, components: MutableList<Component>) {
+        addComponent(components, "左角", if (entity.hasLeftHorn()) "有" else "无")
+        addComponent(components, "右角", if (entity.hasRightHorn()) "有" else "无")
+        addComponent(components, "尖叫山羊", if (entity.isScreaming) "是" else "否")
     }
 }

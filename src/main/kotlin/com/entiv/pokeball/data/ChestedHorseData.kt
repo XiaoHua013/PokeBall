@@ -4,30 +4,17 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.ChestedHorse
 
-class ChestedHorseData(
-    private val carryingChest: Boolean
-): EntityData<ChestedHorse>() {
-    override fun applyCompound(nbtCompound: NBTCompound) {
-        nbtCompound.setBoolean("carryingChest", carryingChest)
+object ChestedHorseData : DataWrapper<ChestedHorse>() {
+    override fun entityWriteToNbt(entity: ChestedHorse, compound: NBTCompound) {
+        compound.setBoolean("carryingChest", entity.isCarryingChest)
     }
 
-    override fun applyComponent(components: MutableList<Component>) {
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: ChestedHorse) {
+        entity.isCarryingChest = compound.getBoolean("carryingChest")
     }
 
-    override fun applyEntity(entity: ChestedHorse) {
-        entity.isCarryingChest = carryingChest
+    override fun entityWriteToComponent(entity: ChestedHorse, components: MutableList<Component>) {
+        addComponent(components, "拥有箱子", if (entity.isCarryingChest) "是" else "否")
     }
 
-    companion object : DataCreator<ChestedHorse>() {
-        override val dataClass = ChestedHorse::class.java
-
-        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
-            return ChestedHorseData(nbtCompound.getBoolean("carryingChest"))
-        }
-
-        override fun getEntityData(entity: ChestedHorse): EntityData<*> {
-            return ChestedHorseData(entity.isCarryingChest)
-        }
-
-    }
 }

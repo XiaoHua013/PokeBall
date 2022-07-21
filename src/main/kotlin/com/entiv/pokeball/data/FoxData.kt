@@ -5,68 +5,38 @@ import net.kyori.adventure.text.Component
 import org.bukkit.entity.AnimalTamer
 import org.bukkit.entity.Fox
 
-class FoxData(
-    private val firstTrustedPlayer: AnimalTamer?,
-    private val secondTrustedPlayer: AnimalTamer?,
-    private val foxType: Fox.Type,
-) : EntityData<Fox>() {
-    override fun applyCompound(nbtCompound: NBTCompound) {
-        nbtCompound.setObject("firstTrustedPlayer", firstTrustedPlayer)
-        nbtCompound.setObject("secondTrustedPlayer", secondTrustedPlayer)
-        nbtCompound.setString("foxType", foxType.name)
+object FoxData : DataWrapper<Fox>() {
+    override fun entityWriteToNbt(entity: Fox, compound: NBTCompound) {
+        compound.setObject("firstTrustedPlayer", entity.firstTrustedPlayer)
+        compound.setObject("secondTrustedPlayer", entity.secondTrustedPlayer)
+        compound.setString("foxType", entity.foxType.name)
     }
 
-    override fun applyComponent(components: MutableList<Component>) {
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: Fox) {
+        entity.firstTrustedPlayer = compound.getObject("firstTrustedPlayer", AnimalTamer::class.java)
+        entity.secondTrustedPlayer = compound.getObject("secondTrustedPlayer", AnimalTamer::class.java)
+        entity.foxType = Fox.Type.valueOf(compound.getString("foxType"))
+    }
 
-        loreComponent("品种", translateFoxType(foxType)).also {
-            components.add(it)
-        }
+    override fun entityWriteToComponent(entity: Fox, components: MutableList<Component>) {
+
+        addComponent(components, "品种", translateFoxType(entity.foxType))
+
+        val firstTrustedPlayer = entity.firstTrustedPlayer
+        val secondTrustedPlayer = entity.secondTrustedPlayer
 
         if (firstTrustedPlayer != null && secondTrustedPlayer != null) {
-            loreComponent("信任玩家", "${firstTrustedPlayer.name}, ${secondTrustedPlayer.name}").also {
-                components.add(it)
-            }
+            addComponent(components, "信任玩家", "${firstTrustedPlayer.name}, ${secondTrustedPlayer.name}")
         } else if (firstTrustedPlayer == null && secondTrustedPlayer == null) {
-            loreComponent("信任玩家", "无").also {
-                components.add(it)
-            }
+            addComponent(components, "信任玩家", "无")
         } else {
-            loreComponent("信任玩家", "${firstTrustedPlayer?.name ?: secondTrustedPlayer!!.name}").also {
-                components.add(it)
-            }
+            addComponent(components, "信任玩家", "${firstTrustedPlayer?.name ?: secondTrustedPlayer!!.name}")
         }
     }
-
-    override fun applyEntity(entity: Fox) {
-        entity.firstTrustedPlayer = firstTrustedPlayer
-        entity.secondTrustedPlayer = secondTrustedPlayer
-        entity.foxType = foxType
-    }
-
     private fun translateFoxType(type: Fox.Type):String  {
         return when (type) {
             Fox.Type.RED -> "红狐"
             Fox.Type.SNOW -> "北极狐"
-        }
-    }
-
-    companion object : DataCreator<Fox>() {
-        override val dataClass = Fox::class.java
-
-        override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
-            return FoxData(
-                nbtCompound.getObject("firstTrustedPlayer", AnimalTamer::class.java),
-                nbtCompound.getObject("secondTrustedPlayer", AnimalTamer::class.java),
-                Fox.Type.valueOf(nbtCompound.getString("foxType"))
-            )
-        }
-
-        override fun getEntityData(entity: Fox): EntityData<*> {
-            return FoxData(
-                entity.firstTrustedPlayer,
-                entity.secondTrustedPlayer,
-                entity.foxType
-            )
         }
     }
 }
