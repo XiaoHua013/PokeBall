@@ -1,13 +1,14 @@
 package com.entiv.pokeball
 
-import com.entiv.pokeball.data.AbstractHorseData
-import com.entiv.pokeball.data.AgeableData
-import com.entiv.pokeball.data.LivingEntityData
+import com.entiv.pokeball.data.*
 import com.entiv.pokeball.utils.getEntityType
+import com.entiv.pokeball.utils.toPokeBallItem
 import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
+import kotlin.reflect.full.companionObjectInstance
+import kotlin.reflect.full.createInstance
 
 class PokeBall(private val itemStack: ItemStack) {
 
@@ -17,8 +18,9 @@ class PokeBall(private val itemStack: ItemStack) {
         val world = location.world
         val entity = world.spawnEntity(location, entityType)
 
-        LivingEntityData.fromItemStack(itemStack)?.processEntity(entity)
-        AbstractHorseData.fromItemStack(itemStack)?.processEntity(entity)
-        AgeableData.fromItemStack(itemStack)?.processEntity(entity)
+        EntityData::class.sealedSubclasses.forEach {
+            val companionObjectInstance = it.companionObjectInstance as? DataCreator<*> ?: error("类 ${it.simpleName} 的伴生对象没有实现 DataCreator 接口")
+            companionObjectInstance.fromItemStack(itemStack)?.processEntity(entity)
+        }
     }
 }

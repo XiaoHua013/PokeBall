@@ -15,7 +15,6 @@ class LivingEntityData(
     private val maxHealth: Double,
 
     private val customName: Component? = null,
-    private val contents: Array<ItemStack?>? = null
 ) : EntityData<LivingEntity>() {
 
     override fun applyEntity(entity: LivingEntity) {
@@ -25,10 +24,6 @@ class LivingEntityData(
         customName?.let {
             entity.customName(it)
             entity.isCustomNameVisible = true
-        }
-
-        if (entity is InventoryHolder) {
-            entity.inventory.contents = contents ?: emptyArray()
         }
     }
 
@@ -49,16 +44,6 @@ class LivingEntityData(
         customName?.let {
             nbtCompound.setObject("customName", it)
         }
-
-        contents?.let {
-            val inventoryCompound = nbtCompound.getCompoundList("inventory")
-
-            for (content in contents) {
-                if (content != null) {
-                    inventoryCompound.addCompound().setItemStack("item", content)
-                }
-            }
-        }
     }
 
     companion object : DataCreator<LivingEntity>() {
@@ -70,8 +55,7 @@ class LivingEntityData(
                 entity.type,
                 entity.health,
                 entity.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.baseValue ?: error("最大血量读取异常!"),
-                entity.customName(),
-                (entity as? InventoryHolder)?.inventory?.contents
+                entity.customName()
             )
         }
 
@@ -82,14 +66,7 @@ class LivingEntityData(
             val maxHealth = nbtCompound.getDouble("maxHealth")
             val name = nbtCompound.getObject("customName", Component::class.java)
 
-            val inventoryCompound = nbtCompound.getCompoundList("inventory")
-            val inventory = inventoryCompound
-                .map {
-                    NBTItem.convertNBTtoItem(it.getCompound("item"))
-                }
-                .toTypedArray()
-
-            return LivingEntityData(type, health, maxHealth, name, inventory)
+            return LivingEntityData(type, health, maxHealth, name)
         }
     }
 }

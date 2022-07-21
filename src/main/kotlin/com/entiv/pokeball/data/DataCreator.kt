@@ -7,7 +7,7 @@ import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
 
-abstract class DataCreator<T: Entity> {
+sealed class DataCreator<T> {
 
     abstract val dataEntityClass: Class<T>
 

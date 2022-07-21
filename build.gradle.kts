@@ -43,14 +43,17 @@ repositories {
 
 dependencies {
     implementation("com.entiv:insekicore:1.0.8")
+
     compileOnly(kotlin("stdlib"))
+    compileOnly(kotlin("reflect"))
+
+    compileOnly("org.purpurmc.purpur", "purpur-api", "1.19-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.0")
+    compileOnly("de.tr7zw:item-nbt-api-plugin:2.10.0")
 //    compileOnly("com.djrapitops:plan-api:5.2-R0.1")
 //    compileOnly("com.zaxxer:HikariCP:5.0.1")
 //    compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-    compileOnly("de.tr7zw:item-nbt-api-plugin:2.10.0")
 //    compileOnly("com.plotsquared:PlotSquared-Core:6.9.0")
-    compileOnly("org.purpurmc.purpur", "purpur-api", "1.19-R0.1-SNAPSHOT")
     compileOnly(fileTree("libs"))
 }
 

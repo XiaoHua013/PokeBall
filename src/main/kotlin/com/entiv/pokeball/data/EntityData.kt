@@ -8,7 +8,7 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
 
-abstract class EntityData<T : Entity> {
+sealed class EntityData<T> {
 
     abstract fun applyCompound(nbtCompound: NBTCompound)
 
