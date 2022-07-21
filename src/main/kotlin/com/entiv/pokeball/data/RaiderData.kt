@@ -22,7 +22,7 @@ class RaiderData(
     }
 
     companion object : DataCreator<Raider>() {
-        override val dataEntityClass = Raider::class.java
+        override val dataClass = Raider::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             return RaiderData(nbtCompound.getBoolean("isPatrolLeader"))

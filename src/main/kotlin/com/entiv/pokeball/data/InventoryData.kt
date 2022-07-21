@@ -30,7 +30,7 @@ class InventoryData(
     }
 
     companion object : DataCreator<InventoryHolder>() {
-        override val dataEntityClass = InventoryHolder::class.java
+        override val dataClass = InventoryHolder::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             val inventoryCompound = nbtCompound.getCompoundList("inventory")

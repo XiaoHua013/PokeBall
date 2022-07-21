@@ -19,7 +19,7 @@ class ChestedHorseData(
     }
 
     companion object : DataCreator<ChestedHorse>() {
-        override val dataEntityClass = ChestedHorse::class.java
+        override val dataClass = ChestedHorse::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             return ChestedHorseData(nbtCompound.getBoolean("carryingChest"))

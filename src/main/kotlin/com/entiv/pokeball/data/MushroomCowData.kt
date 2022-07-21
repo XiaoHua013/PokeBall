@@ -21,7 +21,7 @@ class MushroomCowData(
     }
 
     companion object : DataCreator<MushroomCow>() {
-        override val dataEntityClass = MushroomCow::class.java
+        override val dataClass = MushroomCow::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             val variant = MushroomCow.Variant.valueOf(nbtCompound.getString("Variant"))

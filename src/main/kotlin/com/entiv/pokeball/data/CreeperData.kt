@@ -13,7 +13,7 @@ class CreeperData(
     }
 
     override fun applyComponent(components: MutableList<Component>) {
-        loreComponent("闪电充能", if (powered) "是" else "否")
+        loreComponent("闪电爬行者", if (powered) "是" else "否")
     }
 
     override fun applyEntity(entity: Creeper) {
@@ -21,7 +21,7 @@ class CreeperData(
     }
 
     companion object : DataCreator<Creeper>() {
-        override val dataEntityClass = Creeper::class.java
+        override val dataClass = Creeper::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             return CreeperData(nbtCompound.getBoolean("powered"))

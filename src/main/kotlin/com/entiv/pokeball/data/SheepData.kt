@@ -22,7 +22,7 @@ class SheepData(
     }
 
     companion object : DataCreator<Sheep>() {
-        override val dataEntityClass = Sheep::class.java
+        override val dataClass = Sheep::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             return SheepData(nbtCompound.getBoolean("Sheared"))

@@ -18,12 +18,22 @@ class FoxData(
 
     override fun applyComponent(components: MutableList<Component>) {
 
+        loreComponent("品种", translateFoxType(foxType)).also {
+            components.add(it)
+        }
+
         if (firstTrustedPlayer != null && secondTrustedPlayer != null) {
-            loreComponent("信任玩家", "${firstTrustedPlayer.name}, ${secondTrustedPlayer.name}")
+            loreComponent("信任玩家", "${firstTrustedPlayer.name}, ${secondTrustedPlayer.name}").also {
+                components.add(it)
+            }
         } else if (firstTrustedPlayer == null && secondTrustedPlayer == null) {
-            loreComponent("信任玩家", "无")
+            loreComponent("信任玩家", "无").also {
+                components.add(it)
+            }
         } else {
-            loreComponent("信任玩家", "${firstTrustedPlayer?.name ?: secondTrustedPlayer!!.name}")
+            loreComponent("信任玩家", "${firstTrustedPlayer?.name ?: secondTrustedPlayer!!.name}").also {
+                components.add(it)
+            }
         }
     }
 
@@ -33,8 +43,15 @@ class FoxData(
         entity.foxType = foxType
     }
 
+    private fun translateFoxType(type: Fox.Type):String  {
+        return when (type) {
+            Fox.Type.RED -> "红狐"
+            Fox.Type.SNOW -> "北极狐"
+        }
+    }
+
     companion object : DataCreator<Fox>() {
-        override val dataEntityClass = Fox::class.java
+        override val dataClass = Fox::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             return FoxData(

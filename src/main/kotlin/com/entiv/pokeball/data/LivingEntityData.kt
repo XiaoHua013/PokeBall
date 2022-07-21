@@ -48,7 +48,7 @@ class LivingEntityData(
 
     companion object : DataCreator<LivingEntity>() {
 
-        override val dataEntityClass = LivingEntity::class.java
+        override val dataClass = LivingEntity::class.java
 
         override fun getEntityData(entity: LivingEntity): EntityData<*> {
             return LivingEntityData(

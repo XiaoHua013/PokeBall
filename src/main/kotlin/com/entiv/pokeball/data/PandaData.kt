@@ -14,9 +14,8 @@ class PandaData(
     }
 
     override fun applyComponent(components: MutableList<Component>) {
-        //TODO 汉化
-        loreComponent("显性基因", mainGene.name).let { components.add(it) }
-        loreComponent("隐性基因", hiddenGene.name).let { components.add(it) }
+        loreComponent("显性基因", translateGene(mainGene)).let { components.add(it) }
+        loreComponent("隐性基因", translateGene(hiddenGene)).let { components.add(it) }
     }
 
     override fun applyEntity(entity: Panda) {
@@ -24,8 +23,20 @@ class PandaData(
         entity.hiddenGene = hiddenGene
     }
 
+    private fun translateGene(gene: Panda.Gene): String {
+        return when (gene) {
+            Panda.Gene.LAZY -> "懒惰"
+            Panda.Gene.WORRIED -> "忧郁"
+            Panda.Gene.PLAYFUL -> "顽皮"
+            Panda.Gene.AGGRESSIVE -> "好斗"
+            Panda.Gene.WEAK -> "体弱"
+            Panda.Gene.BROWN -> "棕色"
+            Panda.Gene.NORMAL -> "普通"
+        }
+    }
+
     companion object : DataCreator<Panda>() {
-        override val dataEntityClass = Panda::class.java
+        override val dataClass = Panda::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             val mainGene = Panda.Gene.valueOf(nbtCompound.getString("mainGene"))

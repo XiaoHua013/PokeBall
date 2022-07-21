@@ -24,7 +24,7 @@ class PigZombieData(
     }
 
     companion object : DataCreator<PigZombie>() {
-        override val dataEntityClass = PigZombie::class.java
+        override val dataClass = PigZombie::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             return PigZombieData(

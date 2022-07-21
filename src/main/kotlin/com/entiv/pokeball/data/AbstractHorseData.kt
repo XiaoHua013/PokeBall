@@ -26,7 +26,7 @@ class AbstractHorseData(
 
     companion object : DataCreator<AbstractHorse>() {
 
-        override val dataEntityClass = AbstractHorse::class.java
+        override val dataClass = AbstractHorse::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             val jumpStrength = nbtCompound.getDouble("jumpStrength")

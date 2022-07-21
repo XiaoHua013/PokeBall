@@ -24,7 +24,7 @@ class AgeableData(
 
     companion object : DataCreator<Ageable>() {
 
-        override val dataEntityClass = Ageable::class.java
+        override val dataClass = Ageable::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
 

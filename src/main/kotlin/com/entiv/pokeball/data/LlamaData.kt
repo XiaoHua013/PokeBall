@@ -1,5 +1,6 @@
 package com.entiv.pokeball.data
 
+import com.entiv.pokeball.utils.colorTranslation
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Llama
@@ -14,8 +15,7 @@ class LlamaData(
     }
 
     override fun applyComponent(components: MutableList<Component>) {
-        //TODO 汉化
-        loreComponent("颜色", color.name)
+        loreComponent("颜色", colorTranslation(color.name))
         loreComponent("力量", strength)
     }
 
@@ -25,7 +25,7 @@ class LlamaData(
     }
 
     companion object : DataCreator<Llama>() {
-        override val dataEntityClass = Llama::class.java
+        override val dataClass = Llama::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             val color = Llama.Color.valueOf(nbtCompound.getString("Color"))

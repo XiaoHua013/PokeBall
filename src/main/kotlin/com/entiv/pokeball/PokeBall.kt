@@ -18,6 +18,7 @@ class PokeBall(private val itemStack: ItemStack) {
         val world = location.world
         val entity = world.spawnEntity(location, entityType)
 
+        //TODO 排序问题，LivingData 的数据应该排在最前面
         EntityData::class.sealedSubclasses.forEach {
             val companionObjectInstance = it.companionObjectInstance as? DataCreator<*> ?: error("类 ${it.simpleName} 的伴生对象没有实现 DataCreator 接口")
             companionObjectInstance.fromItemStack(itemStack)?.processEntity(entity)

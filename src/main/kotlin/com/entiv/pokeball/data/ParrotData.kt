@@ -1,5 +1,6 @@
 package com.entiv.pokeball.data
 
+import com.entiv.pokeball.utils.colorTranslation
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Parrot
@@ -12,8 +13,7 @@ class ParrotData(
     }
 
     override fun applyComponent(components: MutableList<Component>) {
-        //TODO 汉化
-        loreComponent("品种", variant.name).also { components.add(it) }
+        loreComponent("颜色", colorTranslation(variant.name)).also { components.add(it) }
     }
 
     override fun applyEntity(entity: Parrot) {
@@ -21,7 +21,7 @@ class ParrotData(
     }
 
     companion object : DataCreator<Parrot>() {
-        override val dataEntityClass = Parrot::class.java
+        override val dataClass = Parrot::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             val variant = Parrot.Variant.valueOf(nbtCompound.getString("Variant"))

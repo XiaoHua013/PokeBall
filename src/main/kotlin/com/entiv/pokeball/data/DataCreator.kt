@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack
 
 sealed class DataCreator<T> {
 
-    abstract val dataEntityClass: Class<T>
+    abstract val dataClass: Class<T>
 
     protected abstract fun getEntityData(entity: T): EntityData<*>
 
@@ -17,7 +17,7 @@ sealed class DataCreator<T> {
 
     fun fromEntity(entity: Entity): EntityData<*>? {
 
-        if (!dataEntityClass.isAssignableFrom(entity.javaClass)) {
+        if (!dataClass.isAssignableFrom(entity.javaClass)) {
             return null
         }
 
@@ -33,7 +33,7 @@ sealed class DataCreator<T> {
         val entityType = itemStack.getEntityType() ?: return null
         val entityClass = entityType.entityClass ?: return null
 
-        if (!dataEntityClass.isAssignableFrom(entityClass)) {
+        if (!dataClass.isAssignableFrom(entityClass)) {
             return null
         }
 

@@ -19,7 +19,7 @@ class PufferFishData(private val puffState: Int) : EntityData<PufferFish>() {
     }
 
     companion object : DataCreator<PufferFish>() {
-        override val dataEntityClass = PufferFish::class.java
+        override val dataClass = PufferFish::class.java
 
         override fun getEntityData(entity: PufferFish): EntityData<*> {
             return PufferFishData(entity.puffState)

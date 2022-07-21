@@ -24,7 +24,7 @@ class HorseData(
     }
 
     companion object : DataCreator<Horse>() {
-        override val dataEntityClass = Horse::class.java
+        override val dataClass = Horse::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             val horseColor = Horse.Color.valueOf(nbtCompound.getString("Color"))

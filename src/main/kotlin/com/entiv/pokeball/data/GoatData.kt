@@ -28,7 +28,7 @@ class GoatData(
     }
 
     companion object : DataCreator<Goat>() {
-        override val dataEntityClass = Goat::class.java
+        override val dataClass = Goat::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             return GoatData(

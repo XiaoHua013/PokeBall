@@ -1,5 +1,6 @@
 package com.entiv.pokeball.data
 
+import com.entiv.pokeball.utils.translateDyeColor
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.DyeColor
@@ -13,8 +14,7 @@ class ColorableData(
     }
 
     override fun applyComponent(components: MutableList<Component>) {
-        //TODO 汉化
-        loreComponent("颜色", color.name).apply {
+        loreComponent("颜色", translateDyeColor(color)).apply {
             components.add(this)
         }
     }
@@ -24,7 +24,7 @@ class ColorableData(
     }
 
     companion object : DataCreator<Colorable>() {
-        override val dataEntityClass = Colorable::class.java
+        override val dataClass = Colorable::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             val color = DyeColor.valueOf(nbtCompound.getString("Color"))
@@ -35,7 +35,5 @@ class ColorableData(
             val color = entity.color ?: DyeColor.WHITE
             return ColorableData(color)
         }
-
     }
-
 }

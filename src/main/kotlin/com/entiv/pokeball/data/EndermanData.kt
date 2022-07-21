@@ -26,7 +26,7 @@ class EndermanData(
     }
 
     companion object : DataCreator<Enderman>() {
-        override val dataEntityClass = Enderman::class.java
+        override val dataClass = Enderman::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             val carriedBlock = nbtCompound.getObject("carriedBlock", BlockData::class.java)

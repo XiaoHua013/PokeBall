@@ -12,7 +12,6 @@ class RabbitData(
     }
 
     override fun applyComponent(components: MutableList<Component>) {
-        //TODO 汉化
         loreComponent("品种", type.name).also { components.add(it) }
     }
 
@@ -21,7 +20,7 @@ class RabbitData(
     }
 
     companion object : DataCreator<Rabbit>() {
-        override val dataEntityClass = Rabbit::class.java
+        override val dataClass = Rabbit::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             val type = Rabbit.Type.valueOf(nbtCompound.getString("RabbitType"))

@@ -18,7 +18,7 @@ class PhantomData(private val size:Int): EntityData<Phantom>() {
     }
 
     companion object : DataCreator<Phantom>() {
-        override val dataEntityClass = Phantom::class.java
+        override val dataClass = Phantom::class.java
 
         override fun getEntityData(nbtCompound: NBTCompound): EntityData<*> {
             return PhantomData(nbtCompound.getInteger("Size"))
