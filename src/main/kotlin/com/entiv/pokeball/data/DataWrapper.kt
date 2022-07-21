@@ -1,5 +1,6 @@
 package com.entiv.pokeball.data
 
+import com.google.common.reflect.Parameter
 import de.tr7zw.nbtapi.NBTCompound
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
@@ -7,6 +8,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
+import java.lang.reflect.ParameterizedType
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -18,7 +20,13 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
 
     protected abstract fun entityWriteToComponent(entity: T, components: MutableList<Component>)
 
+    private fun canCastEntity(entity: Entity) = entity::class.isSubclassOf(clazz)
+
     fun processEntity(entity: Entity, compound: NBTCompound) {
+
+        this::class.typeParameters.forEach {
+            println("name = ${it.name}")
+        }
 
         castEntity(entity)?.let {
             nbtWriteToEntity(compound, it)
@@ -40,8 +48,6 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
         entityWriteToComponent(castEntity, lore)
         itemStack.lore(lore)
     }
-
-    private fun canCastEntity(entity: Entity) = entity::class.isSubclassOf(clazz)
 
     protected fun addComponent(components: MutableList<Component>, type: String, variable: Any) {
         val text = Component.text()
