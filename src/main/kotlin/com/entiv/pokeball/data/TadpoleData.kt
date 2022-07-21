@@ -4,22 +4,16 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Tadpole
 
-//class TadpoleData(
-//    val age: Int
-//
-//): EntityData<Tadpole>() {
-//    override fun applyCompound(compound: NBTCompound) {
-//        compound.setInteger("Age", age)
-//    }
-//
-//    override fun applyComponent(components: MutableList<Component>) {
-//        components.add(loreComponent("年龄", age))
-//    }
-//
-//    override fun applyEntity(entity: Tadpole) {
-//        entity.age = age
-//    }
-//
-//}
+object TadpoleData : DataWrapper<Tadpole>() {
+    override fun entityWriteToNbt(entity: Tadpole, compound: NBTCompound) {
+        compound.setInteger("Age", entity.age)
+    }
 
-object TadpoleData
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: Tadpole) {
+        entity.age = compound.getInteger("Age")
+    }
+
+    override fun entityWriteToComponent(entity: Tadpole, components: MutableList<Component>) {
+        addComponent(components, "年龄", entity.age)
+    }
+}

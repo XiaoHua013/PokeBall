@@ -4,18 +4,17 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Phantom
 
-//class PhantomData(private val size:Int): EntityData<Phantom>() {
-//    override fun applyCompound(compound: NBTCompound) {
-//        compound.setInteger("Size", size)
-//    }
-//
-//    override fun applyComponent(components: MutableList<Component>) {
-//        loreComponent("大小", size).also { components.add(it) }
-//    }
-//
-//    override fun applyEntity(entity: Phantom) {
-//        entity.size = size
-//    }
-//
-//}
-object PhantomData
+object PhantomData : DataWrapper<Phantom>() {
+    override fun entityWriteToNbt(entity: Phantom, compound: NBTCompound) {
+        compound.setInteger("Size", entity.size)
+    }
+
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: Phantom) {
+        entity.size = compound.getInteger("Size")
+    }
+
+    override fun entityWriteToComponent(entity: Phantom, components: MutableList<Component>) {
+        addComponent(components, "大小", entity.size)
+    }
+
+}

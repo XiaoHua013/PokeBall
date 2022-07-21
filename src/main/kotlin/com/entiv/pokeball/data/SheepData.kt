@@ -4,22 +4,17 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Sheep
 
-//class SheepData(
-//    val isSheared: Boolean,
-//    ) : EntityData<Sheep>() {
-//    override fun applyCompound(compound: NBTCompound) {
-//        compound.setBoolean("Sheared", isSheared)
-//    }
-//
-//    override fun applyComponent(components: MutableList<Component>) {
-//        loreComponent("被剪毛", if (isSheared) "是" else "否").apply {
-//            components.add(this)
-//        }
-//    }
-//
-//    override fun applyEntity(entity: Sheep) {
-//        entity.isSheared = isSheared
-//    }
-//
-//}
-object SheepData
+object SheepData : DataWrapper<Sheep>() {
+    override fun entityWriteToNbt(entity: Sheep, compound: NBTCompound) {
+        compound.setBoolean("Sheared", entity.isSheared)
+    }
+
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: Sheep) {
+        entity.isSheared = compound.getBoolean("Sheared")
+    }
+
+    override fun entityWriteToComponent(entity: Sheep, components: MutableList<Component>) {
+        addComponent(components, "被剪毛", if (entity.isSheared) "是" else "否")
+    }
+
+}

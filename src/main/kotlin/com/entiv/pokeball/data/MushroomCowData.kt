@@ -15,16 +15,30 @@ import org.bukkit.entity.MushroomCow
 //        loreComponent("品种", translate(variant)).also { components.add(it) }
 //    }
 //
-//    private fun translate(variant: MushroomCow.Variant): String {
-//        return when (variant) {
-//            MushroomCow.Variant.RED -> "红色哞菇"
-//            MushroomCow.Variant.BROWN -> "棕色哞菇"
-//        }
-//    }
+
 //
 //    override fun applyEntity(entity: MushroomCow) {
 //        entity.variant = variant
 //    }
 //
 //}
-object MushroomCowData
+object MushroomCowData : DataWrapper<MushroomCow>() {
+    override fun entityWriteToNbt(entity: MushroomCow, compound: NBTCompound) {
+        compound.setString("Variant", entity.variant.name)
+    }
+
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: MushroomCow) {
+        entity.variant = MushroomCow.Variant.valueOf(compound.getString("Variant"))
+    }
+
+    override fun entityWriteToComponent(entity: MushroomCow, components: MutableList<Component>) {
+        addComponent(components, "品种", translateVariant(entity.variant))
+    }
+
+    private fun translateVariant(variant: MushroomCow.Variant): String {
+        return when (variant) {
+            MushroomCow.Variant.RED -> "红色哞菇"
+            MushroomCow.Variant.BROWN -> "棕色哞菇"
+        }
+    }
+}

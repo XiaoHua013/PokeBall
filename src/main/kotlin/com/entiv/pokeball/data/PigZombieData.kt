@@ -25,4 +25,20 @@ import org.bukkit.entity.PigZombie
 //
 //
 //}
-object PigZombieData
+object PigZombieData : DataWrapper<PigZombie>() {
+    override fun entityWriteToNbt(entity: PigZombie, compound: NBTCompound) {
+        compound.setBoolean("Angry", entity.isAngry)
+        compound.setInteger("AngerLevel", entity.anger)
+    }
+
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: PigZombie) {
+        entity.isAngry = compound.getBoolean("Angry")
+        entity.anger = compound.getInteger("AngerLevel")
+    }
+
+    override fun entityWriteToComponent(entity: PigZombie, components: MutableList<Component>) {
+        addComponent(components, "愤怒", if (entity.isAngry) "是" else "否")
+        addComponent(components, "愤怒等级", entity.anger)
+    }
+
+}

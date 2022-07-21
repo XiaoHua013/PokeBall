@@ -16,15 +16,7 @@ import org.bukkit.entity.Parrot.Variant
 //        loreComponent("颜色", translate(variant)).also { components.add(it) }
 //    }
 //
-//    private fun translate(variant: Variant): String {
-//        return when (variant) {
-//            Variant.RED -> "红色"
-//            Variant.GREEN -> "绿色"
-//            Variant.BLUE -> "蓝色"
-//            Variant.CYAN -> "青色"
-//            Variant.GRAY -> "灰色"
-//        }
-//    }
+
 //    override fun applyEntity(entity: Parrot) {
 //        entity.variant = variant
 //    }
@@ -32,4 +24,27 @@ import org.bukkit.entity.Parrot.Variant
 //
 //
 //}
-object ParrotData
+object ParrotData : DataWrapper<Parrot>() {
+    override fun entityWriteToNbt(entity: Parrot, compound: NBTCompound) {
+        compound.setString("Variant", entity.variant.name)
+    }
+
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: Parrot) {
+        entity.variant = Variant.valueOf(compound.getString("Variant"))
+    }
+
+    override fun entityWriteToComponent(entity: Parrot, components: MutableList<Component>) {
+        addComponent(components, "颜色", translateVariant(entity.variant))
+    }
+
+    private fun translateVariant(variant: Variant): String {
+        return when (variant) {
+            Variant.RED -> "红色"
+            Variant.GREEN -> "绿色"
+            Variant.BLUE -> "蓝色"
+            Variant.CYAN -> "青色"
+            Variant.GRAY -> "灰色"
+        }
+    }
+
+}

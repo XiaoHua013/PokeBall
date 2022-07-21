@@ -6,34 +6,22 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.AnimalTamer
 import org.bukkit.entity.Tameable
 
-//class TameableData(
-//    val isTamed: Boolean,
-//    val owner: AnimalTamer?
-//) : EntityData<Tameable>() {
-//    override fun applyCompound(compound: NBTCompound) {
-//        compound.setBoolean("isTamed", isTamed)
-//        compound.setString("owner", owner?.name ?: "无")
-//    }
-//
-//    override fun applyComponent(components: MutableList<Component>) {
-//        loreComponent("已驯服", if (isTamed) "是" else "否").apply {
-//            components.add(this)
-//        }
-//
-//        if (isTamed) {
-//            loreComponent("主人", owner?.name ?: "无").apply {
-//                components.add(this)
-//            }
-//        }
-//
-//    }
-//
-//    override fun applyEntity(entity: Tameable) {
-//        entity.isTamed = isTamed
-//        if (isTamed) {
-//            entity.owner = owner
-//        }
-//    }
-//
-//}
-object TameableData
+object TameableData : DataWrapper<Tameable>() {
+    override fun entityWriteToNbt(entity: Tameable, compound: NBTCompound) {
+        compound.setBoolean("isTamed", entity.isTamed)
+        compound.setString("owner", entity.owner?.name ?: "无")
+    }
+
+    override fun nbtWriteToEntity(compound: NBTCompound, entity: Tameable) {
+        entity.isTamed = compound.getBoolean("isTamed")
+        entity.owner = Bukkit.getOfflinePlayer(compound.getString("owner"))
+    }
+
+    override fun entityWriteToComponent(entity: Tameable, components: MutableList<Component>) {
+        addComponent(components, "已驯服", if (entity.isTamed) "是" else "否")
+        if (entity.isTamed) {
+            addComponent(components, "主人", entity.owner?.name ?: "无")
+        }
+    }
+
+}
