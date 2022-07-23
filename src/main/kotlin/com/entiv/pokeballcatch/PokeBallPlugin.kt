@@ -1,16 +1,11 @@
 package com.entiv.pokeballcatch
 
+import com.entiv.core.command.CompositeCommand
+import com.entiv.core.command.DefaultCommand
 import com.entiv.core.plugin.InsekiPlugin
-import com.entiv.pokeballcatch.pokeball.PokeBall
-import com.entiv.pokeballcatch.utils.isPokeBall
-import com.entiv.pokeballcatch.utils.toPokeBallItem
-
-import org.bukkit.Material
-import org.bukkit.entity.LivingEntity
-import org.bukkit.event.EventHandler
+import com.entiv.pokeballcatch.command.GiveCommand
+import com.entiv.pokeballcatch.pokeball.PokeBallManager
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerInteractEntityEvent
-import org.bukkit.event.player.PlayerInteractEvent
 
 class PokeBallPlugin : InsekiPlugin(), Listener {
 
@@ -20,29 +15,14 @@ class PokeBallPlugin : InsekiPlugin(), Listener {
         )
         server.consoleSender.sendMessage(*message)
         registerListener(this)
+
+        moduleManager.load(PokeBallManager)
+        saveDefaultConfig()
+        registerCommand()
     }
 
-    @EventHandler
-    private fun onPlayerIE(event: PlayerInteractEntityEvent) {
-        val player = event.player
-        val entity = event.rightClicked as? LivingEntity ?: return
-
-        val item = player.inventory.itemInMainHand
-
-        if (item.type == Material.AIR) {
-            val pokeBallItem = entity.toPokeBallItem()
-            player.inventory.addItem(pokeBallItem)
-        }
-    }
-
-    @EventHandler
-    private fun onPlayerI(event: PlayerInteractEvent) {
-        val player = event.player
-        val item = event.item ?: return
-
-        if (item.isPokeBall()) {
-            val pokeBall = PokeBall(item)
-            pokeBall.spawnEntity(player.location)
-        }
+    private fun registerCommand() {
+        DefaultCommand.register()
+        GiveCommand.register()
     }
 }

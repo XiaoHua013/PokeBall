@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.Nameable
 
-class NameableData : DataWrapper<Nameable>(Nameable::class) {
+object NameableData : DataWrapper<Nameable>(Nameable::class) {
 
     override val priority = 120
 

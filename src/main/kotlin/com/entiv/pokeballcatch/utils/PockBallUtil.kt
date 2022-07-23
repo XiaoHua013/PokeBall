@@ -1,49 +1,20 @@
 package com.entiv.pokeballcatch.utils
 
-import com.entiv.core.debug.LagCatcher
+import com.entiv.core.debug.debug
+import com.entiv.core.plugin.InsekiPlugin
 import com.entiv.pokeballcatch.data.DataWrapper
+import com.google.common.base.Enums
 import de.tr7zw.nbtapi.NBTItem
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextDecoration
-import org.bukkit.Bukkit
 import org.bukkit.DyeColor
-import org.bukkit.Material
-import org.bukkit.entity.Entity
+import org.bukkit.Location
+import org.bukkit.Sound
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.SkullMeta
-import java.net.URL
-import java.util.*
 
 val dataWrappers = DataWrapper::class.sealedSubclasses
     .mapNotNull { it.objectInstance }
     .sortedBy { it.priority }
     .toList()
-
-fun Entity.toPokeBallItem(): ItemStack {
-    val itemStack = ItemStack(Material.PLAYER_HEAD)
-    val skullMeta = itemStack.itemMeta as SkullMeta
-
-    skullMeta.displayName(
-        Component.text("精灵球", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false)
-    )
-
-    LagCatcher.performanceCheck("get skull", 0) {
-        val profile = Bukkit.getServer().createProfile(UUID.randomUUID())
-        val textures = profile.textures
-
-        textures.skin = URL("https://textures.minecraft.net/texture/93e68768f4fab81c94df735e205c3b45ec45a67b558f3884479a62dd3f4bdbf8")
-        profile.setTextures(textures)
-        skullMeta.playerProfile = profile
-        itemStack.itemMeta = skullMeta
-    }
-
-    LagCatcher.performanceCheck("entity to item", 0) {
-        dataWrappers.forEach { it.processItemStack(itemStack, this) }
-    }
-
-    return itemStack
-}
 
 fun ItemStack.isPokeBall() = NBTItem(this).getCompound("PokeBall") != null
 
@@ -67,3 +38,15 @@ fun translateDyeColor(dyeColor: DyeColor): String {
         DyeColor.WHITE -> "白色"
     }
 }
+
+fun Player.safePlaySound(location: Location, soundName: String) {
+    val sound = Enums.getIfPresent(Sound::class.java, soundName).orNull()
+
+    if (sound != null) {
+        playSound(location, sound, 1f, 1f)
+    } else {
+        debug("声音 $soundName 不存在，请检查配置文件！")
+    }
+}
+
+val config get() = InsekiPlugin.instance.config
