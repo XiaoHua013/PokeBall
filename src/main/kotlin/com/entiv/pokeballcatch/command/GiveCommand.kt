@@ -21,6 +21,7 @@ object GiveCommand : CompositeCommand(
         val player = findPlayer(0)
         val ballType = findString(1)
 
+        //TODO 优化捕捉体验，右键生物
         val pokeBall = PokeBallManager.getPokeBall(ballType) ?: commandException("${errorPrefix}精灵球类型 $ballType 不存在")
         val itemStack = pokeBall.getPokeBallItem()
         val amount = findIntOrDefault(2, 1)

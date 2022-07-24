@@ -22,6 +22,8 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
+import org.bukkit.persistence.PersistentDataType
+import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 import org.jetbrains.annotations.NotNull
 import java.net.URL
@@ -78,6 +80,7 @@ class PokeBall(
                 ?.let {
                     if (it.type in canCatchMob) {
                         onHitEntity(player, item, it)
+                        cancel()
                     }
                 }
         }
@@ -101,18 +104,7 @@ class PokeBall(
     }
 
     private fun onHitEntity(player: Player, pokeBall: Item, entity: LivingEntity) {
-
-        val damageByEntityEvent = EntityDamageByEntityEvent(
-            player,
-            entity,
-            EntityDamageEvent.DamageCause.ENTITY_ATTACK,
-            0.0
-        )
-
-        if (damageByEntityEvent.isCancelled) {
-            teleportItemToPlayer(pokeBall, player)
-            return
-        }
+        //TODO 优化逻辑，命中后之后 tp 或损坏逻辑
 
         if (!testCatchCondition(player, entity)) {
             teleportItemToPlayer(pokeBall, player)
@@ -130,9 +122,13 @@ class PokeBall(
             world.playEffect(location, Effect.SMOKE, 0)
 
             val item = entity.world.dropItem(location, getCaughtBallItem(entity))
+            item.owner = player.uniqueId
+
             teleportItemToPlayer(item, player)
             Lang.sendMessage("捕捉成功", player, entityPlaceholder(entity))
+
         } else {
+
             if (RandomUtil.checkChance(brokenChance)) {
                 pokeBall.remove()
                 Lang.sendMessage("精灵球损坏", player, entityPlaceholder(entity))
@@ -140,11 +136,22 @@ class PokeBall(
                 teleportItemToPlayer(pokeBall, player)
                 Lang.sendMessage("捕捉失败", player, entityPlaceholder(entity))
             }
-
         }
     }
 
     private fun testCatchCondition(player: Player, entity: LivingEntity): Boolean {
+        val damageByEntityEvent = EntityDamageByEntityEvent(
+            player,
+            entity,
+            EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+            0.0
+        )
+
+        if (damageByEntityEvent.isCancelled) {
+            Lang.sendMessage("受到保护", player, entityPlaceholder(entity))
+            return false
+        }
+
         if (!canCatchMob.contains(entity.type)) {
             Lang.sendMessage("无法捕捉", player, entityPlaceholder(entity), ballPlaceholder())
             return false
