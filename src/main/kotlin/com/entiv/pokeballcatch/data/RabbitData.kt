@@ -1,5 +1,6 @@
 package com.entiv.pokeballcatch.data
 
+import com.entiv.core.utils.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Rabbit
@@ -14,19 +15,9 @@ object RabbitData : DataWrapper<Rabbit>(Rabbit::class) {
     }
 
     override fun entityWriteToComponent(entity: Rabbit, components: MutableList<Component>) {
-        addComponent(components, "品种", translateType(entity.rabbitType))
+        addComponent(components, "品种", entity.rabbitType.translate())
     }
 
-    private fun translateType(type: Rabbit.Type): String {
-        return when (type) {
-            Rabbit.Type.BROWN -> "棕色"
-            Rabbit.Type.WHITE -> "白色"
-            Rabbit.Type.BLACK -> "黑色"
-            Rabbit.Type.BLACK_AND_WHITE -> "黑白斑点"
-            Rabbit.Type.GOLD -> "金黄色"
-            Rabbit.Type.SALT_AND_PEPPER -> "棕白色"
-            Rabbit.Type.THE_KILLER_BUNNY -> "杀手兔"
-        }
-    }
+
 
 }

@@ -7,22 +7,29 @@ import com.entiv.pokeballcatch.command.GiveCommand
 import com.entiv.pokeballcatch.pokeball.PokeBallManager
 import org.bukkit.event.Listener
 
-class PokeBallPlugin : InsekiPlugin(), Listener {
+class PokeBallPlugin : InsekiPlugin() {
 
     override fun onEnabled() {
         val message = arrayOf(
             "§e${name}-${description.version}§a 插件已启用", "§a插件制作作者:§e EnTIv §aQQ群:§e 600731934"
         )
         server.consoleSender.sendMessage(*message)
-        registerListener(this)
 
-        moduleManager.load(PokeBallManager)
-        saveDefaultConfig()
-        registerCommand()
+        reload()
     }
 
-    private fun registerCommand() {
+    private fun registerCommands() {
         DefaultCommand.register()
         GiveCommand.register()
+    }
+
+    override fun reload() {
+        saveDefaultConfig()
+
+        unregisterCommands()
+        registerCommands()
+
+        moduleManager.unload(PokeBallManager)
+        moduleManager.load(PokeBallManager)
     }
 }

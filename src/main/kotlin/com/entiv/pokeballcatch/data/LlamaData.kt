@@ -1,5 +1,6 @@
 package com.entiv.pokeballcatch.data
 
+import com.entiv.core.utils.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Llama
@@ -18,16 +19,8 @@ object LlamaData : DataWrapper<Llama>(Llama::class) {
     }
 
     override fun entityWriteToComponent(entity: Llama, components: MutableList<Component>) {
-        addComponent(components, "颜色", translateColor(entity.color))
+        addComponent(components, "颜色", entity.color.translate())
         addComponent(components, "力量", entity.strength.toString())
     }
 
-    private fun translateColor(color: Color): String {
-        return when (color) {
-            Color.BROWN -> "棕色"
-            Color.WHITE -> "亮银色"
-            Color.CREAMY -> "白色"
-            Color.GRAY -> "沙褐色"
-        }
-    }
 }

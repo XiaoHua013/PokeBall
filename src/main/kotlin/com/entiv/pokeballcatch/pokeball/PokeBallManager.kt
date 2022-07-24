@@ -8,6 +8,7 @@ import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 
@@ -50,7 +51,6 @@ object PokeBallManager : Module(), Listener {
 
     @EventHandler
     private fun denyPlace(event: BlockPlaceEvent) {
-        val player = event.player
         val item = event.itemInHand
 
         if (item.isPokeBall()) {
@@ -68,11 +68,7 @@ object PokeBallManager : Module(), Listener {
 
         val pokeBall = getPokeBall(itemStack)
 
-        if (pokeBall.isCaughtBall(itemStack)) {
-            pokeBall.spawnEntity(itemStack, player.location)
-        } else {
-            pokeBall.throwPokeBall(player, itemStack)
-        }
+        pokeBall.throwPokeBall(player, itemStack)
     }
 
 

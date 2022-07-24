@@ -1,6 +1,6 @@
 package com.entiv.pokeballcatch.data
 
-import com.entiv.pokeballcatch.utils.translateDyeColor
+import com.entiv.core.utils.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.DyeColor
@@ -16,6 +16,6 @@ object ColorableData : DataWrapper<Colorable>(Colorable::class) {
     }
 
     override fun entityWriteToComponent(entity: Colorable, components: MutableList<Component>) {
-        addComponent(components, "颜色", translateDyeColor(entity.color ?: DyeColor.WHITE))
+        addComponent(components, "颜色", (entity.color ?: DyeColor.WHITE).translate())
     }
 }

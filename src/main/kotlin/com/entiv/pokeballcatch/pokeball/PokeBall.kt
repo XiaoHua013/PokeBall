@@ -2,20 +2,32 @@ package com.entiv.pokeballcatch.pokeball
 
 import com.entiv.core.common.submit
 import com.entiv.core.utils.RandomUtil
+import com.entiv.core.utils.friendlyName
+import com.entiv.pokeballcatch.utils.Lang
 import com.entiv.pokeballcatch.utils.config
 import com.entiv.pokeballcatch.utils.dataWrappers
-import com.entiv.pokeballcatch.utils.safePlaySound
 import com.google.common.collect.HashBiMap
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.*
+import org.bukkit.attribute.Attribute
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.*
+import org.bukkit.event.entity.CreatureSpawnEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityDamageEvent.DamageModifier
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
+import org.bukkit.util.Vector
+import org.jetbrains.annotations.NotNull
 import java.net.URL
 import java.util.*
+import kotlin.math.max
+import kotlin.math.roundToInt
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.isSuperclassOf
@@ -33,42 +45,77 @@ class PokeBall(
 ) {
 
     fun throwPokeBall(player: Player, pokeBall: ItemStack) {
-        player.safePlaySound(player.location, config.getString("基础设置.投掷音效", "")!!)
 
         val item = player.world.dropItem(player.eyeLocation, pokeBall.clone().apply { amount = 1 })
         item.velocity = player.location.direction.multiply(config.getDouble("基础设置.投掷速度", 1.0))
 
-        item.setCanMobPickup(false)
+        if (isCaughtBall(pokeBall)) {
+            catchThrow(player, item)
+        } else {
+            summonThrow(item)
+        }
+
+        player.playSound(player, Sound.ENTITY_EGG_THROW, 1f, 1f)
+        pokeBall.amount -= 1
+    }
+
+    private fun catchThrow(player: Player, item: Item) {
+
         item.owner = player.uniqueId
 
-        pokeBall.amount -= 1
+        submit(period = 1) {
+            if (!item.isValid || item.isOnGround) {
+                teleportItemToPlayer(item, player)
+                cancel()
+                return@submit
+            }
 
-        submit(period = 5) {
-            item.location.getNearbyEntities(1.0, 1.0, 1.0)
+            item.location.getNearbyEntities(0.7, 0.7, 0.7)
                 .filterIsInstance<LivingEntity>()
                 .filter { it.type != EntityType.PLAYER }
-                .firstOrNull { it.type != EntityType.ARMOR_STAND }?.let {
+                .filter { it.type != EntityType.ARMOR_STAND }
+                .firstOrNull { it.entitySpawnReason != CreatureSpawnEvent.SpawnReason.CUSTOM }
+                ?.let {
                     if (it.type in canCatchMob) {
                         onHitEntity(player, item, it)
                     }
                 }
+        }
+    }
 
+    private fun summonThrow(item: Item) {
+        item.setCanMobPickup(false)
+        item.setCanPlayerPickup(false)
+
+        submit(period = 1) {
             if (!item.isValid) {
                 cancel()
+                return@submit
             }
 
             if (item.isOnGround) {
-                item.teleport(player)
-                return@submit
+                spawnEntity(item.itemStack, item.location)
+                item.remove()
             }
         }
     }
 
-    fun onHitEntity(player: Player, pokeBall: Item, entity: LivingEntity) {
-        if (!testCatchCondition(player, entity)) {
-            pokeBall.teleport(player)
-            pokeBall.setCanMobPickup(false)
+    private fun onHitEntity(player: Player, pokeBall: Item, entity: LivingEntity) {
 
+        val damageByEntityEvent = EntityDamageByEntityEvent(
+            player,
+            entity,
+            EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+            0.0
+        )
+
+        if (damageByEntityEvent.isCancelled) {
+            teleportItemToPlayer(pokeBall, player)
+            return
+        }
+
+        if (!testCatchCondition(player, entity)) {
+            teleportItemToPlayer(pokeBall, player)
             return
         }
 
@@ -79,27 +126,40 @@ class PokeBall(
             pokeBall.remove()
             entity.remove()
 
-            world.createExplosion(location, 0.0f)
+            world.createExplosion(location, 0.0f, false, false)
             world.playEffect(location, Effect.SMOKE, 0)
-            entity.world.dropItem(location, getCaughtBallItem(entity))
-            player.sendRichMessage(config.getString("提示消息.捕捉成功", "")!!)
+
+            val item = entity.world.dropItem(location, getCaughtBallItem(entity))
+            teleportItemToPlayer(item, player)
+            Lang.sendMessage("捕捉成功", player, entityPlaceholder(entity))
         } else {
-            pokeBall.remove()
-            player.sendRichMessage(config.getString("提示消息.捕捉失败", "")!!)
+            if (RandomUtil.checkChance(brokenChance)) {
+                pokeBall.remove()
+                Lang.sendMessage("精灵球损坏", player, entityPlaceholder(entity))
+            } else {
+                teleportItemToPlayer(pokeBall, player)
+                Lang.sendMessage("捕捉失败", player, entityPlaceholder(entity))
+            }
+
         }
     }
 
     private fun testCatchCondition(player: Player, entity: LivingEntity): Boolean {
         if (!canCatchMob.contains(entity.type)) {
-            MiniMessage.miniMessage().deserialize(config.getString("提示消息.无法捕捉", "")!!)
+            Lang.sendMessage("无法捕捉", player, entityPlaceholder(entity), ballPlaceholder())
             return false
         }
 
-        //TODO 待添加
-//        if (entity.health >= healthLimit) {
-//            player.sendRichMessage(config.getString("提示消息.血量限制", "")!!)
-//            return false
-//        }
+        val maxHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.baseValue
+
+        if (maxHealth != null && healthLimit >= 0 && entity.health > max(
+                (maxHealth * healthLimit / 100).roundToInt(),
+                1
+            )
+        ) {
+            Lang.sendMessage("血量限制", player, entityPlaceholder(entity), healthLimitPlaceholder(entity))
+            return false
+        }
 
         return true
     }
@@ -109,7 +169,7 @@ class PokeBall(
         val entityType = EntityType.valueOf(compound.getString("EntityType"))
 
         val world = location.world
-        val entity = world.spawnEntity(location, entityType)
+        val entity = world.spawnEntity(location, entityType, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG)
 
         dataWrappers.forEach {
             it.processEntity(entity, compound)
@@ -133,7 +193,7 @@ class PokeBall(
     }
 
     fun isCaughtBall(itemStack: ItemStack): Boolean {
-        return NBTItem(itemStack).getCompound("PokeBall").getString("EntityType").isNotEmpty()
+        return NBTItem(itemStack).getCompound("PokeBall").getString("EntityType").isEmpty()
     }
 
     private fun getBasePockBall(): ItemStack {
@@ -158,12 +218,21 @@ class PokeBall(
         return itemStack
     }
 
+    private fun teleportItemToPlayer(item: Item, player: Player) {
+        item.velocity = Vector(0.0, 0.0, 0.0)
+        player.playSound(item.location, Sound.ENTITY_ARROW_HIT, 1f, 1f)
+        item.teleport(player.eyeLocation)
+    }
+
     companion object {
         fun fromConfig(section: ConfigurationSection): PokeBall {
 
             val type = section.name
 
-            val name = MiniMessage.miniMessage().deserialize(section.getString("名称") ?: "精灵球")
+            val name = MiniMessage.miniMessage()
+                .deserialize(section.getString("名称") ?: "精灵球")
+                .decoration(TextDecoration.ITALIC, false)
+
             val url = URL(
                 section.getString("头颅")
                     ?: "https://textures.minecraft.net/texture/93e68768f4fab81c94df735e205c3b45ec45a67b558f3884479a62dd3f4bdbf8"
@@ -214,9 +283,6 @@ class PokeBall(
 
             return entityTypes.mapNotNull { it.entityClass }
                 .map { it.kotlin }
-                .filter { LivingEntity::class.isSuperclassOf(it) }
-                .filter { it != Player::class }
-                .filter { it != ArmorStand::class }
                 .filter {
                     var canCatch = true
                     for (state in states) {
@@ -230,4 +296,18 @@ class PokeBall(
                 .toList()
         }
     }
+
+    private fun entityPlaceholder(entity: Entity) = Placeholder.component("entity", entity.friendlyName())
+
+    private fun ballPlaceholder() = Placeholder.component("ball", Component.text(type))
+
+    private fun healthLimitPlaceholder(entity: LivingEntity) = Placeholder.component(
+        "health",
+        Component.text(
+            max(
+                (entity.getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.baseValue * healthLimit / 100).roundToInt(),
+                1
+            )
+        )
+    )
 }

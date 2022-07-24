@@ -1,5 +1,6 @@
 package com.entiv.pokeballcatch.data
 
+import com.entiv.core.utils.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.AnimalTamer
@@ -20,7 +21,7 @@ object FoxData : DataWrapper<Fox>(Fox::class) {
 
     override fun entityWriteToComponent(entity: Fox, components: MutableList<Component>) {
 
-        addComponent(components, "品种", translateFoxType(entity.foxType))
+        addComponent(components, "品种", entity.foxType.translate())
 
         val firstTrustedPlayer = entity.firstTrustedPlayer
         val secondTrustedPlayer = entity.secondTrustedPlayer
@@ -33,10 +34,5 @@ object FoxData : DataWrapper<Fox>(Fox::class) {
             addComponent(components, "信任玩家", "${firstTrustedPlayer?.name ?: secondTrustedPlayer!!.name}")
         }
     }
-    private fun translateFoxType(type: Fox.Type):String  {
-        return when (type) {
-            Fox.Type.RED -> "红狐"
-            Fox.Type.SNOW -> "北极狐"
-        }
-    }
+
 }

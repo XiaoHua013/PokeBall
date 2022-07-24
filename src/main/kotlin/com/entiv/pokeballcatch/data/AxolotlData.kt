@@ -1,5 +1,6 @@
 package com.entiv.pokeballcatch.data
 
+import com.entiv.core.utils.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Axolotl
@@ -15,17 +16,7 @@ object AxolotlData : DataWrapper<Axolotl>(Axolotl::class) {
     }
 
     override fun entityWriteToComponent(entity: Axolotl, components: MutableList<Component>) {
-        addComponent(components, "颜色", translateVariant(entity.variant))
-    }
-
-    private fun translateVariant(variant: Variant): String {
-        return when (variant) {
-            Variant.LUCY -> "粉红色"
-            Variant.WILD -> "棕色"
-            Variant.GOLD -> "金色"
-            Variant.CYAN -> "青色"
-            Variant.BLUE -> "蓝色"
-        }
+        addComponent(components, "颜色", entity.variant.translate())
     }
 
 }

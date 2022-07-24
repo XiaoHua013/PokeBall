@@ -1,5 +1,6 @@
 package com.entiv.pokeballcatch.data
 
+import com.entiv.core.utils.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Frog
@@ -14,15 +15,8 @@ object FrogData : DataWrapper<Frog>(Frog::class) {
     }
 
     override fun entityWriteToComponent(entity: Frog, components: MutableList<Component>) {
-        addComponent(components, "肤色", translateVariant(entity.variant))
+        addComponent(components, "肤色", entity.variant.translate())
     }
 
-    private fun translateVariant(variant: Variant): String {
-        return when (variant) {
-            Variant.TEMPERATE -> "绿色"
-            Variant.WARM -> "橙色"
-            Variant.COLD -> "白色"
-        }
-    }
 
 }
