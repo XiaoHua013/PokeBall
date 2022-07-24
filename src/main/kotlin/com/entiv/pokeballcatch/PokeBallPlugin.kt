@@ -25,7 +25,7 @@ class PokeBallPlugin : InsekiPlugin() {
 
     override fun reload() {
         saveDefaultConfig()
-
+        reloadConfig()
         unregisterCommands()
         registerCommands()
 

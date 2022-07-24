@@ -15,7 +15,7 @@ object CreeperData : DataWrapper<Creeper>(Creeper::class) {
     }
 
     override fun entityWriteToComponent(entity: Creeper, components: MutableList<Component>) {
-
+        addComponent(components, "闪电爬行者", if (entity.isPowered) "是" else "否")
     }
 
 }
