@@ -39,7 +39,6 @@ class PokeBall(
     val name: Component,
     val skinUrl: URL,
     val ballLore: List<Component>,
-    val entityLore: Component,
     val successChance: Double,
     val brokenChance: Double,
     val healthLimit: Int,
@@ -106,14 +105,12 @@ class PokeBall(
     private fun onHitEntity(player: Player, pokeBall: Item, entity: LivingEntity) {
         //TODO 优化逻辑，命中后之后 tp 或损坏逻辑
 
-        if (!testCatchCondition(player, entity)) {
-            teleportItemToPlayer(pokeBall, player)
-            return
-        }
-
-        if (RandomUtil.checkChance(successChance)) {
+        if (testCatchCondition(player, pokeBall, entity)) {
             val location = entity.location
             val world = location.world
+
+            val item = entity.world.dropItem(location, getCaughtBallItem(entity))
+            item.owner = player.uniqueId
 
             pokeBall.remove()
             entity.remove()
@@ -121,25 +118,15 @@ class PokeBall(
             world.createExplosion(location, 0.0f, false, false)
             world.playEffect(location, Effect.SMOKE, 0)
 
-            val item = entity.world.dropItem(location, getCaughtBallItem(entity))
-            item.owner = player.uniqueId
-
             teleportItemToPlayer(item, player)
             Lang.sendMessage("捕捉成功", player, entityPlaceholder(entity))
-
-        } else {
-
-            if (RandomUtil.checkChance(brokenChance)) {
-                pokeBall.remove()
-                Lang.sendMessage("精灵球损坏", player, entityPlaceholder(entity))
-            } else {
-                teleportItemToPlayer(pokeBall, player)
-                Lang.sendMessage("捕捉失败", player, entityPlaceholder(entity))
-            }
         }
+
+        teleportItemToPlayer(pokeBall, player)
+
     }
 
-    private fun testCatchCondition(player: Player, entity: LivingEntity): Boolean {
+    private fun testCatchCondition(player: Player, item: Item, entity: LivingEntity): Boolean {
         val damageByEntityEvent = EntityDamageByEntityEvent(
             player,
             entity,
@@ -159,12 +146,22 @@ class PokeBall(
 
         val maxHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.baseValue
 
-        if (maxHealth != null && healthLimit >= 0 && entity.health > max(
-                (maxHealth * healthLimit / 100).roundToInt(),
-                1
-            )
+        if (maxHealth != null && healthLimit >= 0 && entity.health >
+            max((maxHealth * healthLimit / 100).roundToInt(), 1)
         ) {
             Lang.sendMessage("血量限制", player, entityPlaceholder(entity), healthLimitPlaceholder(entity))
+            return false
+        }
+
+        if (!RandomUtil.checkChance(successChance)) {
+
+            if (RandomUtil.checkChance(brokenChance)) {
+                item.remove()
+                Lang.sendMessage("精灵球损坏", player, entityPlaceholder(entity))
+            } else {
+                Lang.sendMessage("捕捉失败", player, entityPlaceholder(entity))
+            }
+
             return false
         }
 
@@ -226,6 +223,9 @@ class PokeBall(
     }
 
     private fun teleportItemToPlayer(item: Item, player: Player) {
+        if (!item.isValid) {
+            return
+        }
         item.velocity = Vector(0.0, 0.0, 0.0)
         player.playSound(item.location, Sound.ENTITY_ARROW_HIT, 1f, 1f)
         item.teleport(player.eyeLocation)
@@ -245,7 +245,9 @@ class PokeBall(
                     ?: "https://textures.minecraft.net/texture/93e68768f4fab81c94df735e205c3b45ec45a67b558f3884479a62dd3f4bdbf8"
             )
 
-            val ballLore = section.getStringList("精灵球描述").map { MiniMessage.miniMessage().deserialize(it) }
+            val ballLore = section.getStringList("精灵球描述").map {
+                MiniMessage.miniMessage().deserialize(it).decoration(TextDecoration.ITALIC, false)
+            }
 
             val entityLore = MiniMessage.miniMessage().deserialize(section.getString("生物信息描述") ?: "")
 
@@ -259,7 +261,6 @@ class PokeBall(
                 name,
                 url,
                 ballLore,
-                entityLore,
                 successChance,
                 brokenChance,
                 healthLimit,

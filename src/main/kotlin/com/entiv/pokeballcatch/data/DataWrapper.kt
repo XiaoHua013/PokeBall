@@ -1,10 +1,14 @@
 package com.entiv.pokeballcatch.data
 
+import com.entiv.pokeballcatch.utils.Lang
+import com.entiv.pokeballcatch.utils.config
 import de.tr7zw.nbtapi.NBTCompound
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
 import kotlin.reflect.KClass
@@ -24,10 +28,6 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
     private fun canCastEntity(entity: Entity) = entity::class.isSubclassOf(clazz)
 
     fun processEntity(entity: Entity, compound: NBTCompound) {
-
-        this::class.typeParameters.forEach {
-            println("name = ${it.name}")
-        }
 
         castEntity(entity)?.let {
             nbtWriteToEntity(compound, it)
@@ -53,17 +53,23 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
     protected fun addComponent(components: MutableList<Component>, type: String, variable: Any) {
         val text = Component.text()
             .decoration(TextDecoration.ITALIC, false)
-            .append(Component.text("$type: ", NamedTextColor.AQUA))
+            .append(Component.text(type))
+
+        val variableComponent = Component.text()
 
         if (variable is Component) {
-            text.append(variable.color(NamedTextColor.YELLOW))
+            variableComponent.append(variable.color(NamedTextColor.YELLOW))
         } else {
-            text.append(Component.text(variable.toString(), NamedTextColor.YELLOW))
+            variableComponent.append(Component.text(variable.toString(), NamedTextColor.YELLOW))
         }
 
-        components.add(text.build())
+        Lang.getComponent("基础设置.生物信息描述",
+            Placeholder.component("type", text),
+            Placeholder.component("variable", variableComponent)
+        )?.let {
+            components.add(it)
+        }
     }
-
 
     private fun castEntity(entity: Entity): T? {
         @Suppress("UNCHECKED_CAST")

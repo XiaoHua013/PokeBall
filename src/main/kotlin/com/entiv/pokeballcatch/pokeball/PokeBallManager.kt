@@ -41,10 +41,6 @@ object PokeBallManager : Module(), Listener {
         pokeBalls.clear()
     }
 
-    fun isPokeBall(itemStack: ItemStack): Boolean {
-        return NBTItem(itemStack).getCompound("PokeBall") != null
-    }
-
     fun getPokeBall(itemStack: ItemStack): PokeBall {
         val compound = NBTItem(itemStack).getCompound("PokeBall") ?: error("物品 ${itemStack.displayName} 不是一个精灵球")
 
@@ -72,7 +68,7 @@ object PokeBallManager : Module(), Listener {
 
         if (!event.action.isRightClick) return
         val itemStack = event.item ?: return
-        if (!isPokeBall(itemStack)) return
+        if (!itemStack.isPokeBall()) return
 
         val pokeBall = getPokeBall(itemStack)
 
@@ -88,7 +84,7 @@ object PokeBallManager : Module(), Listener {
 
         val player = event.player
         val itemStack = player.inventory.itemInMainHand
-        if (!isPokeBall(itemStack)) return
+        if (!itemStack.isPokeBall()) return
 
         val pokeBall = getPokeBall(itemStack)
 
