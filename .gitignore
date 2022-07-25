@@ -2,3 +2,8 @@
 /.gradle/
 /build/
 /build/classes/kotlin/main/
+
+/.idea/.workspace.xml
+/.idea/.usage.statistics.xml
+
+gradle.propertiesg
