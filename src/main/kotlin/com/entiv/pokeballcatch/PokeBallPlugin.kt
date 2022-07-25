@@ -1,11 +1,9 @@
 package com.entiv.pokeballcatch
 
-import com.entiv.core.command.CompositeCommand
 import com.entiv.core.command.DefaultCommand
 import com.entiv.core.plugin.InsekiPlugin
 import com.entiv.pokeballcatch.command.GiveCommand
 import com.entiv.pokeballcatch.pokeball.PokeBallManager
-import org.bukkit.event.Listener
 
 class PokeBallPlugin : InsekiPlugin() {
 

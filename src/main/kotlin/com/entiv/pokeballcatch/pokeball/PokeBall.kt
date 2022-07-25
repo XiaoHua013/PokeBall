@@ -103,8 +103,6 @@ class PokeBall(
     }
 
     private fun onHitEntity(player: Player, pokeBall: Item, entity: LivingEntity) {
-        //TODO 优化逻辑，命中后之后 tp 或损坏逻辑
-
         if (testCatchCondition(player, pokeBall, entity)) {
             val location = entity.location
             val world = location.world
@@ -248,8 +246,6 @@ class PokeBall(
             val ballLore = section.getStringList("精灵球描述").map {
                 MiniMessage.miniMessage().deserialize(it).decoration(TextDecoration.ITALIC, false)
             }
-
-            val entityLore = MiniMessage.miniMessage().deserialize(section.getString("生物信息描述") ?: "")
 
             val successChance = section.getDouble("成功率", 100.0)
             val brokenChance = section.getDouble("损坏率", 100.0)
