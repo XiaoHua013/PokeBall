@@ -2,6 +2,7 @@ package com.entiv.pokeballcatch.data
 
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.Nameable
 
 object NameableData : DataWrapper<Nameable>(Nameable::class) {
@@ -10,13 +11,13 @@ object NameableData : DataWrapper<Nameable>(Nameable::class) {
 
     override fun entityWriteToNbt(entity: Nameable, compound: NBTCompound) {
         entity.customName()?.let {
-            compound.setObject("CustomName", it)
+            compound.setString("CustomName", GsonComponentSerializer.gson().serialize(it))
         }
     }
 
     override fun nbtWriteToEntity(compound: NBTCompound, entity: Nameable) {
-        compound.getObject("CustomName", Component::class.java)?.let {
-            entity.customName(it)
+        compound.getString("CustomName")?.let {
+            entity.customName(GsonComponentSerializer.gson().deserialize(it))
         }
     }
 

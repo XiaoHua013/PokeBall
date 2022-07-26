@@ -1,6 +1,7 @@
 package com.entiv.pokeballcatch.pokeball
 
 import com.entiv.core.common.submit
+import com.entiv.core.debug.debug
 import com.entiv.core.utils.RandomUtil
 import com.entiv.core.utils.friendlyName
 import com.entiv.pokeballcatch.utils.Lang
@@ -53,7 +54,7 @@ class PokeBall(
         if (isCaughtBall(pokeBall)) {
             catchThrow(player, item)
         } else {
-            summonThrow(item)
+            summonThrow(player, item)
         }
 
         player.playSound(player, Sound.ENTITY_EGG_THROW, 1f, 1f)
@@ -85,7 +86,7 @@ class PokeBall(
         }
     }
 
-    private fun summonThrow(item: Item) {
+    private fun summonThrow(player: Player, item: Item) {
         item.setCanMobPickup(false)
         item.setCanPlayerPickup(false)
 
@@ -96,8 +97,15 @@ class PokeBall(
             }
 
             if (item.isOnGround) {
-                spawnEntity(item.itemStack, item.location)
+                val location = item.location
+
+                spawnEntity(item.itemStack, location)
                 item.remove()
+
+                if (!config.getBoolean("基础设置.一次性精灵球")) {
+                    val newItem = item.world.dropItem(location, getPokeBallItem())
+                    teleportItemToPlayer(newItem, player)
+                }
             }
         }
     }
@@ -132,6 +140,7 @@ class PokeBall(
             0.0
         )
 
+        debug("玩家 ${player.name} 尝试伤害实体 ${entity}, 结果 ${damageByEntityEvent.isCancelled}")
         if (damageByEntityEvent.isCancelled) {
             Lang.sendMessage("受到保护", player, entityPlaceholder(entity))
             return false
@@ -250,7 +259,9 @@ class PokeBall(
             val successChance = section.getDouble("成功率", 100.0)
             val brokenChance = section.getDouble("损坏率", 100.0)
             val healthLimit = section.getInt("血量限制", -1)
-            val catchManager = getAllowCatchList(section.getStringList("生物捕捉管理"))
+            val catchManager = getAllowCatchList(section.getStringList("捕捉生物管理"))
+
+            debug("精灵球 $type 可捕捉的实体列表: ${catchManager.joinToString { it.name }}")
 
             return PokeBall(
                 type,
@@ -277,16 +288,21 @@ class PokeBall(
                 }
             })
 
+            debug(states.joinToString { it.clazz.simpleName!! })
+
             val biMap = HashBiMap.create<EntityType, KClass<out Entity>>()
 
             val entityTypes = EntityType.values()
 
-            entityTypes.mapNotNull { it.entityClass }.map { it.kotlin }.forEachIndexed { index, kClass ->
-                biMap[entityTypes[index]] = kClass
-            }
+            entityTypes.mapNotNull { it.entityClass }
+                .map { it.kotlin }
+                .forEachIndexed { index, kClass -> biMap[entityTypes[index]] = kClass }
 
             return entityTypes.mapNotNull { it.entityClass }
                 .map { it.kotlin }
+                .filter { it.isSubclassOf(LivingEntity::class) }
+                .filter { it != Player::class }
+                .filter { it != ArmorStand::class }
                 .filter {
                     var canCatch = true
                     for (state in states) {

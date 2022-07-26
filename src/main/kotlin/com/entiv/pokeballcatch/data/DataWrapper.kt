@@ -21,8 +21,14 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
 
     protected abstract fun entityWriteToNbt(entity: T, compound: NBTCompound)
 
+    /**
+     * 这个方法被 try 包起来了，不会有报错
+     */
     protected abstract fun nbtWriteToEntity(compound: NBTCompound, entity: T)
 
+    /**
+     * 这个方法被 try 包起来了，不会有报错
+     */
     protected abstract fun entityWriteToComponent(entity: T, components: MutableList<Component>)
 
     private fun canCastEntity(entity: Entity) = entity::class.isSubclassOf(clazz)
@@ -30,7 +36,10 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
     fun processEntity(entity: Entity, compound: NBTCompound) {
 
         castEntity(entity)?.let {
-            nbtWriteToEntity(compound, it)
+            try {
+                nbtWriteToEntity(compound, it)
+            } catch (_: Exception) {
+            }
         }
     }
 
@@ -46,7 +55,10 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
         nbtItem.applyNBT(itemStack)
 
         val lore = itemStack.lore() ?: mutableListOf()
-        entityWriteToComponent(castEntity, lore)
+        try {
+            entityWriteToComponent(castEntity, lore)
+        } catch (_: Exception) {
+        }
         itemStack.lore(lore)
     }
 
