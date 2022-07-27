@@ -8,7 +8,7 @@
 
 精灵球:
   精灵球:
-    名称: "<b>精灵球</b>"
+    名称: "<b><light_purple>精灵球</light_purple></b>"
     # 请输入自定义头颅的 url
     头颅: "https://textures.minecraft.net/texture/93e68768f4fab81c94df735e205c3b45ec45a67b558f3884479a62dd3f4bdbf8"
     # 精灵球的描述
@@ -38,7 +38,7 @@
       # 允许捕捉鸡
       # - "Chicken:true"
   大师球:
-    名称: "<b>大师球</b>"
+    名称: "<b><light_purple>大师球</light_purple></b>"
     头颅: "https://textures.minecraft.net/texture/9d408c5698f2d7a8a1415ef9592aeb4bf62c9ae7ccf188497530bf3c8b9648e5"
     精灵球描述:
       - ""

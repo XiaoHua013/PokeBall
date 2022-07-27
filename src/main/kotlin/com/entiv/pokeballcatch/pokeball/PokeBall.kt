@@ -140,7 +140,7 @@ class PokeBall(
             0.0
         )
 
-        debug("玩家 ${player.name} 尝试伤害实体 ${entity}, 结果 ${damageByEntityEvent.isCancelled}")
+        debug("玩家 ${player.name} 尝试伤害实体 ${entity.name}, 结果 ${damageByEntityEvent.isCancelled}")
         if (damageByEntityEvent.isCancelled) {
             Lang.sendMessage("受到保护", player, entityPlaceholder(entity))
             return false
