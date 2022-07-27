@@ -39,6 +39,10 @@ repositories {
         name = "CodeMC"
         url = uri("https://repo.codemc.org/repository/maven-public/")
     }
+
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+        name = "sonatype-oss-snapshots1"
+    }
 }
 
 dependencies {
@@ -47,13 +51,10 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(kotlin("reflect"))
 
-    compileOnly("org.purpurmc.purpur", "purpur-api", "1.19-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.0")
+    implementation("net.kyori:adventure-text-minimessage:4.11.0")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.10.0")
-//    compileOnly("com.djrapitops:plan-api:5.2-R0.1")
-//    compileOnly("com.zaxxer:HikariCP:5.0.1")
-//    compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-//    compileOnly("com.plotsquared:PlotSquared-Core:6.9.0")
     compileOnly(fileTree("libs"))
 }
 
@@ -65,7 +66,8 @@ tasks {
         }
 
         archiveFileName.set("${project.name}-${project.version}.jar")
-        relocate("com.entiv.core", "${project.group}.lib")
+        relocate("com.entiv.core", "${project.group}.lib.core")
+        relocate("net.kyori","${project.group}.lib")
 
         println("导出路径: ${destinationDirectory.get()}")
         println("")
@@ -86,6 +88,6 @@ tasks {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(16))
 }
 

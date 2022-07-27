@@ -24,7 +24,7 @@ object InventoryData : DataWrapper<InventoryHolder>(InventoryHolder::class) {
         val inventoryCompound = compound.getCompoundList("inventory")
         val contents = inventoryCompound.map { it.getItemStack("item") }.toTypedArray()
 
-        entity.inventory.contents = contents
+        entity.inventory.setContents(contents)
     }
 
     override fun entityWriteToComponent(entity: InventoryHolder, components: MutableList<Component>) {

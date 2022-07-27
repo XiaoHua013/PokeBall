@@ -20,13 +20,9 @@ import org.bukkit.entity.*
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
-import org.bukkit.event.entity.EntityDamageEvent.DamageModifier
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
-import org.bukkit.persistence.PersistentDataType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import org.jetbrains.annotations.NotNull
 import java.net.URL
 import java.util.*
 import kotlin.math.max
@@ -37,9 +33,9 @@ import kotlin.reflect.full.isSuperclassOf
 
 class PokeBall(
     val type: String,
-    val name: Component,
-    val skinUrl: URL,
-    val ballLore: List<Component>,
+    val name: String,
+    val texture: String,
+    val ballLore: List<String>,
     val successChance: Double,
     val brokenChance: Double,
     val healthLimit: Int,
@@ -49,6 +45,7 @@ class PokeBall(
     fun throwPokeBall(player: Player, pokeBall: ItemStack) {
 
         val item = player.world.dropItem(player.eyeLocation, pokeBall.clone().apply { amount = 1 })
+        item.setCanMobPickup(false)
         item.velocity = player.location.direction.multiply(config.getDouble("基础设置.投掷速度", 1.0))
 
         if (isCaughtBall(pokeBall)) {
@@ -57,7 +54,7 @@ class PokeBall(
             summonThrow(player, item)
         }
 
-        player.playSound(player, Sound.ENTITY_EGG_THROW, 1f, 1f)
+        player.playSound(player.location, Sound.ENTITY_EGG_THROW, 1f, 1f)
         pokeBall.amount -= 1
     }
 
@@ -116,6 +113,7 @@ class PokeBall(
             val world = location.world
 
             val item = entity.world.dropItem(location, getCaughtBallItem(entity))
+            item.setCanMobPickup(false)
             item.owner = player.uniqueId
 
             pokeBall.remove()
@@ -209,21 +207,13 @@ class PokeBall(
 
     private fun getBasePockBall(): ItemStack {
         val itemStack = ItemStack(Material.PLAYER_HEAD)
-        val skullMeta = itemStack.itemMeta as SkullMeta
-
-        skullMeta.displayName(name)
-
-        val profile = Bukkit.getServer().createProfile(UUID.randomUUID())
-        val textures = profile.textures
-
-        textures.skin = skinUrl
-        profile.setTextures(textures)
-        skullMeta.playerProfile = profile
-        itemStack.itemMeta = skullMeta
+        itemStack.itemMeta.displayName(name)
 
         val nbtItem = NBTItem(itemStack)
         val compound = nbtItem.addCompound("PokeBall")
+
         compound.setString("BallType", type)
+
         nbtItem.applyNBT(itemStack)
 
         return itemStack

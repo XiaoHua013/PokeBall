@@ -42,7 +42,7 @@ object PokeBallManager : Module(), Listener {
     }
 
     fun getPokeBall(itemStack: ItemStack): PokeBall {
-        val compound = NBTItem(itemStack).getCompound("PokeBall") ?: error("物品 ${itemStack.displayName} 不是一个精灵球")
+        val compound = NBTItem(itemStack).getCompound("PokeBall") ?: error("物品 ${itemStack.displayName()} 不是一个精灵球")
 
         val typeName = compound.getString("BallType") ?: error("无法读取到该精灵球的物品类型！")
 
