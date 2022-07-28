@@ -89,6 +89,7 @@ object PokeBallManager : Module(), Listener {
         val pokeBall = getPokeBall(itemStack)
 
         pokeBall.throwPokeBall(player, itemStack)
+        event.isCancelled = true
     }
 
     @EventHandler

@@ -16,8 +16,9 @@ object NameableData : DataWrapper<Nameable>(Nameable::class) {
     }
 
     override fun nbtWriteToEntity(compound: NBTCompound, entity: Nameable) {
-        compound.getString("CustomName")?.let {
-            entity.customName(GsonComponentSerializer.gson().deserialize(it))
+        val name = compound.getString("CustomName")
+        if (name.isNotEmpty()) {
+            entity.customName(GsonComponentSerializer.gson().deserialize(name))
         }
     }
 

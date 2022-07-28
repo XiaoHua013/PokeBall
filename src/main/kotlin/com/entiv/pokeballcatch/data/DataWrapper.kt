@@ -19,16 +19,16 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
     // 优先级, 越小越前面
     open val priority: Int = 100
 
+    /*
+    * 将实体应用到 nbt 上
+    * */
     protected abstract fun entityWriteToNbt(entity: T, compound: NBTCompound)
 
     /**
-     * 这个方法被 try 包起来了，不会有报错
+     * 将 nbt 应用到实体上
      */
     protected abstract fun nbtWriteToEntity(compound: NBTCompound, entity: T)
 
-    /**
-     * 这个方法被 try 包起来了，不会有报错
-     */
     protected abstract fun entityWriteToComponent(entity: T, components: MutableList<Component>)
 
     private fun canCastEntity(entity: Entity) = entity::class.isSubclassOf(clazz)
@@ -38,7 +38,7 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
         castEntity(entity)?.let {
             try {
                 nbtWriteToEntity(compound, it)
-            } catch (_: Exception) {
+            } catch (_: NoSuchMethodException) {
             }
         }
     }
@@ -49,7 +49,11 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
         val nbtItem = NBTItem(itemStack)
 
         nbtItem.addCompound("PokeBall").apply {
-            entityWriteToNbt(castEntity, this)
+            try {
+                entityWriteToNbt(castEntity, this)
+            } catch (_: NoSuchMethodException) {
+
+            }
         }
 
         nbtItem.applyNBT(itemStack)
@@ -57,7 +61,7 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
         val lore = itemStack.lore() ?: mutableListOf()
         try {
             entityWriteToComponent(castEntity, lore)
-        } catch (_: Exception) {
+        } catch (_: NoSuchMethodException) {
         }
         itemStack.lore(lore)
     }
