@@ -6,8 +6,7 @@ import org.bukkit.entity.Creeper
 
 object CreeperData : DataWrapper<Creeper>(Creeper::class) {
     override fun entityWriteToNbt(entity: Creeper, compound: NBTCompound) {
-        compound.setBoolean("powered", true)
-
+        compound.setBoolean("powered", entity.isPowered)
     }
 
     override fun nbtWriteToEntity(compound: NBTCompound, entity: Creeper) {

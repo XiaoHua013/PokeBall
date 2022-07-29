@@ -20,13 +20,9 @@ import org.bukkit.entity.*
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
-import org.bukkit.event.entity.EntityDamageEvent.DamageModifier
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
-import org.bukkit.persistence.PersistentDataType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import org.jetbrains.annotations.NotNull
 import java.net.URL
 import java.util.*
 import kotlin.math.max
@@ -50,6 +46,7 @@ class PokeBall(
 
         val item = player.world.dropItem(player.eyeLocation, pokeBall.clone().apply { amount = 1 })
         item.velocity = player.location.direction.multiply(config.getDouble("基础设置.投掷速度", 1.0))
+        item.owner = player.uniqueId
 
         if (isCaughtBall(pokeBall)) {
             catchThrow(player, item)
@@ -62,8 +59,6 @@ class PokeBall(
     }
 
     private fun catchThrow(player: Player, item: Item) {
-
-        item.owner = player.uniqueId
 
         submit(period = 1) {
             if (!item.isValid || item.isOnGround) {
