@@ -10,6 +10,7 @@
   精灵球:
     名称: "<b><light_purple>精灵球</light_purple></b>"
     # 请输入自定义头颅的 url
+    # 你可以从这个网站上找 https://minecraft-heads.com/ 搜索关键词 PokeBall
     头颅: "https://textures.minecraft.net/texture/93e68768f4fab81c94df735e205c3b45ec45a67b558f3884479a62dd3f4bdbf8"
     # 精灵球的描述
     精灵球描述:
@@ -44,7 +45,6 @@
       - ""
       - "<gray>精心打造的大师球，质量极为优秀</gray>"
       - "<gray>瞄准想要捕捉的生物，右键将精灵球投掷出去!</gray>"
-    生物信息描述: "<type>: <describe>"
     成功率: 50
     损坏率: 0
     血量限制: -1

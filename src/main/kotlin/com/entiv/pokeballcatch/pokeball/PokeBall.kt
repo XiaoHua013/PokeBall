@@ -68,9 +68,11 @@ class PokeBall(
             }
 
             item.location.getNearbyEntities(0.7, 0.7, 0.7)
+                .asSequence()
                 .filterIsInstance<LivingEntity>()
                 .filter { it.type != EntityType.PLAYER }
                 .filter { it.type != EntityType.ARMOR_STAND }
+                .filter { !it.isDead }
                 .firstOrNull { it.entitySpawnReason != CreatureSpawnEvent.SpawnReason.CUSTOM }
                 ?.let {
                     if (it.type in canCatchMob) {
@@ -78,6 +80,8 @@ class PokeBall(
                         cancel()
                     }
                 }
+
+
         }
     }
 

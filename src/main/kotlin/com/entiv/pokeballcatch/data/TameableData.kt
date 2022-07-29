@@ -10,12 +10,21 @@ object TameableData : DataWrapper<Tameable>(Tameable::class) {
 
     override fun entityWriteToNbt(entity: Tameable, compound: NBTCompound) {
         compound.setBoolean("isTamed", entity.isTamed)
-        compound.setString("owner", entity.owner?.name ?: "无")
+
+        entity.owner?.name.let {
+            compound.setString("owner", it)
+        }
     }
 
     override fun nbtWriteToEntity(compound: NBTCompound, entity: Tameable) {
         entity.isTamed = compound.getBoolean("isTamed")
-        entity.owner = Bukkit.getOfflinePlayer(compound.getString("owner"))
+
+        val owner = compound.getString("owner")
+
+        if (owner !=null && owner.isNotEmpty()) {
+            entity.owner = Bukkit.getOfflinePlayer(owner)
+        }
+
     }
 
     override fun entityWriteToComponent(entity: Tameable, components: MutableList<Component>) {
