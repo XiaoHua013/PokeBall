@@ -1,6 +1,5 @@
 package com.entiv.pokeballcatch.data
 
-import com.entiv.core.utils.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.AnimalTamer
@@ -34,5 +33,13 @@ object FoxData : DataWrapper<Fox>(Fox::class) {
             addComponent(components, "信任玩家", "${firstTrustedPlayer?.name ?: secondTrustedPlayer!!.name}")
         }
     }
+
+    fun Fox.Type.translate():String  {
+        return when (this) {
+            Fox.Type.RED -> "红狐"
+            Fox.Type.SNOW -> "北极狐"
+        }
+    }
+
 
 }

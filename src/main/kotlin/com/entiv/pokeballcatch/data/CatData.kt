@@ -1,6 +1,6 @@
 package com.entiv.pokeballcatch.data
 
-import com.entiv.core.utils.translate
+import com.entiv.pokeballcatch.utils.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.DyeColor
@@ -23,5 +23,20 @@ object CatData : DataWrapper<Cat>(Cat::class) {
         addComponent(components, "项圈颜色", entity.collarColor.translate())
     }
 
+    fun Type.translate(): String {
+        return when (this) {
+            Type.TABBY -> "虎斑猫"
+            Type.BLACK -> "西服猫"
+            Type.RED -> "红虎斑猫"
+            Type.SIAMESE -> "暹罗猫"
+            Type.BRITISH_SHORTHAIR -> "英国短毛猫"
+            Type.CALICO -> "花猫"
+            Type.PERSIAN -> "波斯猫"
+            Type.RAGDOLL -> "布偶猫"
+            Type.WHITE -> "白猫"
+            Type.JELLIE -> "起司猫"
+            Type.ALL_BLACK -> "黑猫"
+        }
+    }
 
 }

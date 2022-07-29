@@ -1,7 +1,5 @@
 package com.entiv.pokeballcatch.data
 
-import com.entiv.core.common.submit
-import com.entiv.core.utils.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Villager
@@ -27,5 +25,25 @@ object VillageData : DataWrapper<Villager>(Villager::class) {
         addComponent(components, "等级", entity.villagerLevel.toString())
         addComponent(components, "经验", entity.villagerExperience.toString())
         addComponent(components, "群系", entity.villagerType.translate())
+    }
+
+    fun Villager.Profession?.translate(): Component {
+        return if (this != null) {
+            Component.translatable(this.translationKey())
+        } else {
+            Component.text("未知")
+        }
+    }
+
+    fun Villager.Type.translate(): String {
+        return when (this) {
+            Villager.Type.DESERT -> "沙漠"
+            Villager.Type.JUNGLE -> "丛林"
+            Villager.Type.PLAINS -> "平原"
+            Villager.Type.SAVANNA -> "热带"
+            Villager.Type.SNOW -> "雪地"
+            Villager.Type.SWAMP -> "沼泽"
+            Villager.Type.TAIGA -> "针叶林"
+        }
     }
 }

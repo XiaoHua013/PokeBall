@@ -1,6 +1,5 @@
 package com.entiv.pokeballcatch.data
 
-import com.entiv.core.utils.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Parrot
@@ -19,6 +18,15 @@ object ParrotData : DataWrapper<Parrot>(Parrot::class) {
         addComponent(components, "颜色", entity.variant.translate())
     }
 
+    fun Parrot.Variant.translate(): String {
+        return when (this) {
+            Parrot.Variant.RED -> "红色"
+            Parrot.Variant.GREEN -> "绿色"
+            Parrot.Variant.BLUE -> "蓝色"
+            Parrot.Variant.CYAN -> "青色"
+            Parrot.Variant.GRAY -> "灰色"
+        }
+    }
 
 
 }

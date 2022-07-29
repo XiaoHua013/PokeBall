@@ -1,6 +1,6 @@
 package com.entiv.pokeballcatch.data
 
-import com.entiv.core.utils.translate
+import com.entiv.pokeballcatch.data.VillageData.translate
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Villager
