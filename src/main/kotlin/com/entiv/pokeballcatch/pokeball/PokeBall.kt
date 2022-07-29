@@ -92,7 +92,7 @@ class PokeBall(
             }
 
             if (item.isOnGround) {
-                val location = item.location
+                val location = item.location.toCenterLocation()
 
                 spawnEntity(item.itemStack, location)
                 item.remove()
