@@ -66,8 +66,8 @@ class PokeBall(
                 cancel()
                 return@submit
             }
-
-            item.location.getNearbyEntities(0.7, 0.7, 0.7)
+            val range = config.getDouble("基础设置.捕捉检测范围", 0.7)
+            item.location.getNearbyEntities(range, range, range)
                 .asSequence()
                 .filterIsInstance<LivingEntity>()
                 .filter { it.type != EntityType.PLAYER }

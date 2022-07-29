@@ -1,5 +1,6 @@
 package com.entiv.pokeballcatch.data
 
+import com.entiv.core.debug.debug
 import de.tr7zw.nbtapi.NBTCompound
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -17,14 +18,16 @@ object TameableData : DataWrapper<Tameable>(Tameable::class) {
     }
 
     override fun nbtWriteToEntity(compound: NBTCompound, entity: Tameable) {
-        entity.isTamed = compound.getBoolean("isTamed")
 
         val owner = compound.getString("owner")
 
-        if (owner !=null && owner.isNotEmpty()) {
+        if (owner != null && owner.isNotEmpty()) {
             entity.owner = Bukkit.getOfflinePlayer(owner)
+            debug("已设置主人: $owner")
         }
 
+        entity.isTamed = compound.getBoolean("isTamed")
+        debug("生物已驯服：${entity.isTamed}")
     }
 
     override fun entityWriteToComponent(entity: Tameable, components: MutableList<Component>) {

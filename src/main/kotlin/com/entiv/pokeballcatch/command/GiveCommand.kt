@@ -23,7 +23,7 @@ object GiveCommand : CompositeCommand(
 
         val pokeBall = PokeBallManager.getPokeBall(ballType) ?: commandException("${errorPrefix}精灵球类型 $ballType 不存在")
         val itemStack = pokeBall.getPokeBallItem()
-        val amount = findIntOrDefault(2, 1)
+        val amount = findIntOrNull(2) ?: 1
 
         itemStack.amount = amount
         player.inventory.addOrDrop(player, itemStack)

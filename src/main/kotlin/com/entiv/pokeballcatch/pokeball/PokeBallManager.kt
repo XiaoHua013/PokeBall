@@ -1,8 +1,7 @@
 package com.entiv.pokeballcatch.pokeball
 
 import com.entiv.core.debug.debug
-import com.entiv.core.module.Module
-import com.entiv.core.utils.InventoryUtil
+import com.entiv.core.module.PluginModule
 import com.entiv.pokeballcatch.utils.config
 import com.entiv.pokeballcatch.utils.isPokeBall
 import de.tr7zw.nbtapi.NBTItem
@@ -16,11 +15,12 @@ import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.PlayerInventory
+import java.util.concurrent.TimeUnit
 
-object PokeBallManager : Module(), Listener {
+object PokeBallManager : PluginModule(), Listener {
 
     private val pokeBalls = mutableMapOf<String, PokeBall>()
 
@@ -34,7 +34,6 @@ object PokeBallManager : Module(), Listener {
                 pokeBalls[pokeBall.type] = pokeBall
                 debug("精灵球 ${pokeBall.type} 加载成功")
             }
-
     }
 
     override fun unload() {
@@ -71,8 +70,9 @@ object PokeBallManager : Module(), Listener {
         if (!itemStack.isPokeBall()) return
 
         val pokeBall = getPokeBall(itemStack)
-
         pokeBall.throwPokeBall(player, itemStack)
+
+        event.isCancelled = true
     }
 
     @EventHandler
@@ -86,9 +86,6 @@ object PokeBallManager : Module(), Listener {
         val itemStack = player.inventory.itemInMainHand
         if (!itemStack.isPokeBall()) return
 
-        val pokeBall = getPokeBall(itemStack)
-
-        pokeBall.throwPokeBall(player, itemStack)
         event.isCancelled = true
     }
 

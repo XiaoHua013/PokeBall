@@ -42,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.entiv:insekicore:1.0.8")
+    implementation("com.entiv:insekicore:1.0.9")
 
     compileOnly(kotlin("stdlib"))
     compileOnly(kotlin("reflect"))

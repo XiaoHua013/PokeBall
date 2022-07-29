@@ -2,6 +2,7 @@
 # mini message 网页编辑器：https://webui.adventure.kyori.net/
 基础设置:
   投掷力度: 1
+  捕捉检测范围: 0.7
   生物信息描述: "<aqua><type>:</aqua> <yellow><variable></yellow>"
   # 精灵球是否是一次性，设为 false 可以多次使用直至损坏
   一次性精灵球: true
