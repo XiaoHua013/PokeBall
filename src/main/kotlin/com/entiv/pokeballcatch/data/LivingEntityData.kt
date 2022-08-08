@@ -48,9 +48,13 @@ object LivingEntityData : DataWrapper<LivingEntity>(LivingEntity::class) {
 
         entity.equipment?.armorContents = equipment
 
-        println(compound.getCompound("MainHand"))
-        entity.equipment?.setItemInMainHand(compound.getItemStack("MainHand"))
-        entity.equipment?.setItemInOffHand(compound.getItemStack("OffHand"))
+        if (compound.getCompound("MainHand") == null) {
+            entity.equipment?.setItemInMainHand(compound.getItemStack("MainHand"))
+        }
+
+        if (compound.getCompound("OffHand") == null) {
+            entity.equipment?.setItemInOffHand(compound.getItemStack("OffHand"))
+        }
     }
 
     override fun entityWriteToComponent(entity: LivingEntity, components: MutableList<Component>) {
@@ -61,14 +65,14 @@ object LivingEntityData : DataWrapper<LivingEntity>(LivingEntity::class) {
 
         entity.equipment?.armorContents?.forEachIndexed { index, item ->
             val name = when (index) {
-                0 -> "头盔"
-                1 -> "胸甲"
-                2 -> "护腿"
-                3 -> "靴子"
+                0 -> "靴子"
+                1 -> "护腿"
+                2 -> "胸甲"
+                3 -> "头盔"
                 else -> "错误"
             }
 
-            if (item != null) {
+            if (item != null && item.type != Material.AIR) {
                 addComponent(components, name, Component.translatable(item.type.translationKey()))
             }
         }

@@ -74,9 +74,9 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
         val variableComponent = Component.text()
 
         if (variable is Component) {
-            variableComponent.append(variable.color(NamedTextColor.YELLOW))
+            variableComponent.append(variable)
         } else {
-            variableComponent.append(Component.text(variable.toString(), NamedTextColor.YELLOW))
+            variableComponent.append(Component.text(variable.toString()))
         }
 
         Lang.getComponent("基础设置.生物信息描述",
@@ -95,6 +95,8 @@ sealed class DataWrapper<T : Any>(private val clazz: KClass<T>) {
             null
         }
     }
+
+
 
     protected fun noNeedComponent() {}
 }

@@ -47,6 +47,7 @@ class PokeBall(
         val item = player.world.dropItem(player.eyeLocation, pokeBall.clone().apply { amount = 1 })
         item.velocity = player.location.direction.multiply(config.getDouble("基础设置.投掷速度", 1.0))
         item.owner = player.uniqueId
+        item.setCanMobPickup(false)
 
         if (isCaughtBall(pokeBall)) {
             catchThrow(player, item)
@@ -97,12 +98,15 @@ class PokeBall(
 
             if (item.isOnGround) {
                 val location = item.location.toCenterLocation()
+                val itemStack = item.itemStack
 
-                spawnEntity(item.itemStack, location)
                 item.remove()
+                spawnEntity(itemStack, location)
 
                 if (!config.getBoolean("基础设置.一次性精灵球")) {
                     val newItem = item.world.dropItem(location, getPokeBallItem())
+                    newItem.owner = player.uniqueId
+                    newItem.setCanMobPickup(false)
                     teleportItemToPlayer(newItem, player)
                 }
             }
@@ -116,6 +120,7 @@ class PokeBall(
 
             val item = entity.world.dropItem(location, getCaughtBallItem(entity))
             item.owner = player.uniqueId
+            item.setCanMobPickup(false)
 
             pokeBall.remove()
             entity.remove()
