@@ -62,11 +62,17 @@ class PokeBall(
     private fun catchThrow(player: Player, item: Item) {
 
         submit(period = 1) {
-            if (!item.isValid || item.isOnGround) {
-                teleportItemToPlayer(item, player)
+
+            if (!item.isValid) {
                 cancel()
                 return@submit
             }
+
+            if (item.isOnGround) {
+                teleportItemToPlayer(item, player)
+                return@submit
+            }
+
             val range = config.getDouble("基础设置.捕捉检测范围", 0.7)
             item.location.getNearbyEntities(range, range, range)
                 .asSequence()
@@ -81,8 +87,6 @@ class PokeBall(
                         cancel()
                     }
                 }
-
-
         }
     }
 
@@ -91,6 +95,7 @@ class PokeBall(
         item.setCanPlayerPickup(false)
 
         submit(period = 1) {
+
             if (!item.isValid) {
                 cancel()
                 return@submit
